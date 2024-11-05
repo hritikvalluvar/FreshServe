@@ -1,0 +1,28 @@
+<!-- payment_page.html -->
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Complete Your Payment</h1>
+    <p>Order Total: ₹{{ amount }}</p>
+
+    <form action="{% url 'order_success' %}" method="POST">
+        {% csrf_token %}
+        <script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            data-key="{{ razorpay_merchant_key }}"
+            data-amount="{{ amount|floatformat:2 }}00"
+            data-currency="INR"
+            data-order_id="{{ razorpay_order_id }}"
+            data-buttontext="Pay Now"
+            data-name="Tanuja's BatterHouse" 
+            data-description="Order Payment"
+            data-prefill.name="{{ order.name }}"
+            data-prefill.contact="{{ order.phone_number }}"
+            data-theme.color="#528FF0">
+        </script>
+        <input type="hidden" name="razorpay_order_id" value="{{ razorpay_order_id }}">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    </form>
+</div>
+{% endblock %}

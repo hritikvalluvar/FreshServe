@@ -1,0 +1,24 @@
+
+<!-- order_success.html -->
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-success">Payment Successful!</h1>
+        <p class="lead">Thank you, {{ order.name }}!</p>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Payment Details</h5>
+            <p class="card-text">Your payment of <strong>₹{{ order.price|floatformat:2 }}</strong> has been received.</p>
+            <p class="card-text">Order ID: <strong>{{ order.pk }}</strong></p>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'index' %}" class="btn btn-primary btn-lg">Go to Home</a>
+    </div>
+</div>
+{% endblock %}

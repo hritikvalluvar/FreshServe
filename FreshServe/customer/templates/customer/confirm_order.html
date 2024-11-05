@@ -1,0 +1,92 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <h1 class="text-center mb-4">Order Summary</h1>
+    
+    <h5>Your Selected Items:</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Quantity</th>
+                <th>Product Name</th>
+                <th>Price per Unit (₹)</th>
+                <th>Total (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in selected_products_with_quantities %}
+                <tr>
+                    <td>{{ item.quantity }} {{ item.unit }}</td>
+                    <td>{{ item.product_name }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ item.item_total }}</td>
+                    <input type="hidden" name="quantity_{{ item.product_id }}" value="{{ item.quantity }}">
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="text-end">Delivery Fee</td>
+                <td>₹{{ delivery_fee }}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-end">Convenience Fee (2%)</td>
+                <td>₹{{ convenience_fee|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Total Price:</strong></td>
+                <td><strong>₹{{ grand_total|floatformat:2 }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form method="POST" action="{% url 'order_confirm' %}">
+        {% csrf_token %}
+        <div class="form-group pt-3">
+            <label for="name">Full Name</label>
+            <input required class="form-control" type="text" placeholder="Your Name" name="name" id="name"
+                oninput="this.value = toCamelCase(this.value)" />
+        </div>
+
+        <div class="form-group pt-3">
+            <label for="address">House Number</label>
+            <input required class="form-control" type="text" placeholder="example: D 1049" name="address" id="address"
+                oninput="this.value = this.value.toUpperCase()" />
+        </div>
+
+        <div class="form-group pt-3">
+            <label for="area">Select Area</label>
+            <select required class="form-control" name="area" id="area">
+                <option value="">Choose Area</option>
+                <option value="NT">New Township</option>
+                <option value="OT">Old Township</option>
+                <option value="KK">Khora Kheri</option>
+            </select>
+        </div>
+
+        <div class="form-group pt-3">
+            <label for="customer_phone">Phone Number</label>
+            <input required class="form-control" type="tel" pattern="[0-9]{10}" placeholder="10-digit Mobile Number" name="customer_phone" id="customer_phone" />
+            <small class="form-text text-muted">Enter a 10-digit phone number.</small>
+        </div>
+
+    
+        {% for item in selected_products_with_quantities %}
+            <tr>
+                <input type="hidden" name="quantity_{{ item.product_id }}" value="{{ item.quantity }}">
+            </tr>
+        {% endfor %}
+
+
+
+        <button type="submit" class="btn btn-dark mt-4 mb-5">Place Order</button>
+    </form>
+</div>
+<script>
+function toCamelCase(str) {
+    return str
+        .split(' ')  // Split on spaces
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter, lowercase the rest
+        .join(' '); // Join back with spaces
+}
+</script>
+{% endblock %}

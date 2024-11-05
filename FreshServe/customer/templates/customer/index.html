@@ -1,0 +1,18 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mb-5">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 col-sm-12 offset-md-1 p-4 text-center">
+            <h1>Welcome to Tanuja's BatterHouse</h1>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-1">
+        <div class="card col-md-5 col-sm-12 offset-md-1 p-4 text-center">
+            <h2>Place an Order!</h2> 
+            <a href="{% url 'order' %}" class="btn btn-outline-primary">View Menu</a>
+            <p class="mt-2">Minimum cart value: ₹100</p> <!-- Message added here -->
+        </div>
+    </div>
+</div>
+{% endblock content %}
