@@ -4,12 +4,12 @@
 <div class="container mt-5">
     <form method="POST" action="{% url 'order' %}"> <!-- Form to submit quantities -->
         {% csrf_token %}
-        <div class="overflow-auto" style="max-height: 50vh; max-width: 99%"> <!-- Scrollable area for products -->
+        <div class="overflow-auto" style="max-height: calc(80vh - 150px); max-width: 100%; overflow-x: hidden;"> <!-- Dynamic height for products -->
             <div class="row g-3">
                 {% for product in products %}
                     {% if product.available %}
                         <div class="col-12 mb-4">
-                            <div class="border rounded p-3 d-flex flex-row justify-content-between align-items-center h-100" style="width: 100%; max-width: 100%;">
+                            <div class="border rounded p-3 d-flex flex-row justify-content-between align-items-center h-100" style="width: 100%;">
                                 <div class="d-flex flex-column">
                                     <img src="{{ product.image.url }}" class="img-fluid rounded mb-2" alt="{{ product.name }}" width="100" height="100" style="object-fit: cover; border-radius: 5rem;">
                                     <h5 class="font-weight-bold">{{ product.name }}</h5>
@@ -18,19 +18,15 @@
                                 </div>
                                 <div class="d-flex flex-column align-items-end">
                                     <label for="quantity-{{ product.id }}" class="form-label">Quantity</label>
-                                    <!-- Input with increment/decrement button for quantity selection -->
-                                    <div class="d-flex flex-column align-items-center">
-                                        <input type="number" name="quantity-{{ product.id }}" id="quantity-{{ product.id }}"
-                                               class="form-control text-center" value="0" min="0" readonly
-                                               {% if product.name in "Steamed Idli, Ragi Idli" %}
-                                                   step="5"
-                                               {% elif product.name in "Idli/Dosa Batter, Ragi Batter" %}
-                                                   step="0.5"
-                                               {% else %}
-                                                   step="1"
-                                               {% endif %}>
-                                        <button type="button" class="btn btn-outline-secondary btn-lg" onclick="increment('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px;">+</button>
-                                        <button type="button" class="btn btn-outline-secondary btn-lg" onclick="decrement('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px;">−</button>
+                                    <div class="d-flex flex-column align-items-end"> <!-- Align to the right -->
+                                        <div class="input-group mb-2" style="max-width: 100%;"> <!-- Ensure no horizontal overflow -->
+                                            <input type="number" name="quantity-{{ product.id }}" id="quantity-{{ product.id }}"
+                                                   class="form-control text-center" value="0" min="0" readonly
+                                                   step="{% if product.name in 'Steamed Idli, Ragi Idli' %}5{% elif product.name in 'Idli/Dosa Batter, Ragi Batter' %}0.5{% else %}1{% endif %}">
+                                            <span class="input-group-text">{{ product.unit }}</span> <!-- Display unit here -->
+                                        </div>
+                                        <button type="button" class="btn btn-light" onclick="increment('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #a3d2ca; color: #000;">+</button> <!-- Pastel Green -->
+                                        <button type="button" class="btn btn-light" onclick="decrement('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #ff6f61; color: #000;">−</button> <!-- Pastel Red -->
                                     </div>
                                 </div>
                             </div>

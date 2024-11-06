@@ -1,0 +1,80 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>Kitchen View</h1>
+
+<!-- Date filter form -->
+<form method="GET" action="{% url 'kitchen:kitchen_view' %}">
+    <label for="order_date">Select Order Date:</label>
+    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit">Filter</button>
+</form>
+
+{% if selected_date %}
+    <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2> <!-- Display date in Day, Date Month Year format -->
+{% endif %}
+
+
+<table id="order-table" style="width: 100%; text-align: center; border-collapse: collapse;">
+    <tr>
+        <th style="border: 1px solid black;">Category</th>
+        <th style="border: 1px solid black;">Quantity Ordered</th>
+        <th style="border: 1px solid black;">Total Batter Required (Kg)</th>
+    </tr>
+    {% for category, data in category_totals.items %}
+    <tr>
+        <td style="border: 1px solid black;">{{ category }}</td>
+        <td style="border: 1px solid black;">
+            {{ data.quantity }}
+            {% if data.quantity != '-' %} {{ data.unit }}{% endif %}
+        </td>
+        <td style="border: 1px solid black;">
+            {{ data.batter|default:"-" }}
+        </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Total Idli Batter</strong></td>
+        <td style="border: 1px solid black;"><strong>{{ total_idli_batter }}</strong> kg</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Total Ragi Batter</strong></td>
+        <td style="border: 1px solid black;"><strong>{{ total_ragi_batter }}</strong> kg</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Rice Needed for Idli Batter</strong></td>
+        <td style="border: 1px solid black;"><strong>{{ rice_needed_for_idli_batter }}</strong> kg</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Rice Needed for Ragi Batter</strong></td>
+        <td style="border: 1px solid black;"><strong>{{ rice_needed_for_ragi_batter }}</strong> kg</td>
+    </tr>
+</table>
+
+<!-- Print Button -->
+<button onclick="printTable()">Print</button>
+
+<script>
+function printTable() {
+    var printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Kitchen View</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+    printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
+    printWindow.document.write('</style></head><body>');
+    printWindow.document.write('<h1>Kitchen View</h1>');
+    
+    // Get the selected date and include it as the title in print
+    var selectedDateTitle = document.getElementById("date-title").innerHTML;
+    printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+
+    // Print the table
+    var tableHTML = document.getElementById("order-table").outerHTML;
+    printWindow.document.write(tableHTML);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close(); // Close the document
+    printWindow.print(); // Trigger the print dialog
+}
+</script>
+{% endblock %}

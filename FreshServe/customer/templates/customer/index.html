@@ -9,9 +9,13 @@
     </div>
     <div class="row justify-content-center mt-1">
         <div class="card col-md-5 col-sm-12 offset-md-1 p-4 text-center">
-            <h2>Place an Order!</h2> 
-            <a href="{% url 'order' %}" class="btn btn-outline-primary">View Menu</a>
-            <p class="mt-2">Minimum cart value: ₹100</p> <!-- Message added here -->
+            {% if gate.is_collecting_orders and shop.is_shop_open %}
+                <h2>We are accepting orders for {{ order_date|date:"l, F j, Y" }}</h2>
+                <a href="{% url 'order' %}" class="btn btn-outline-primary">View Menu</a>
+                <p class="mt-2">Minimum cart value: ₹100</p> <!-- Message added here -->
+            {% else %}
+                <h2>We are not accepting orders</h2>
+            {% endif %}
         </div>
     </div>
 </div>

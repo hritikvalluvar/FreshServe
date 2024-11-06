@@ -1,0 +1,92 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>Packaging Bay View</h1>
+
+<!-- Button to print all orders at once -->
+<button onclick="printAllOrders()">Print All Orders</button>
+
+<div id="all-orders" class="order-grid">
+    {% for order in orders %}
+    <div class="order-details" id="order-{{ order.order_id }}">
+        <h2>Order #{{ order.order_id }}</h2>
+        <h3> {{order.order_date|date:"l, d F Y" }}</h3>
+        <p><strong>Name:</strong> {{ order.name }}</p>
+        <p><strong>House No:</strong> {{ order.address }}</p>
+        <p><strong>Area:</strong> {{ order.get_area_display }}</p>
+        
+        <h3>Order Items:</h3>
+        <ul>
+            {% for item in order.items.all %}
+            <li>{{ item.product.name }} ({{ item.quantity }} {{ item.product.unit }})</li>
+            {% endfor %}
+        </ul>
+        
+        <p><strong>Total Price:</strong> ₹{{ order.price }}</p>
+        
+        <!-- Button to print this specific order -->
+        <button onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Function to print a specific order by its element ID
+    function printOrder(orderId) {
+        var printContents = document.getElementById(orderId).innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+
+    // Function to print all orders
+    function printAllOrders() {
+        window.print();
+    }
+</script>
+
+<style>
+    /* Grid layout for orders */
+    .order-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .order-details {
+        border: 1px solid black;
+        padding: 15px;
+        box-sizing: border-box;
+        page-break-inside: avoid; /* Prevent order from breaking across pages */
+    }
+
+    /* Print-specific styles */
+    @media print {
+        button { display: none; } /* Hide print buttons */
+
+        /* Grid layout for multiple orders per page in print */
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two orders per row */
+            gap: 10px;
+        }
+
+        .order-details {
+            padding: 10px;
+            border: 1px solid black;
+            margin-bottom: 0;
+            page-break-inside: avoid;
+        }
+
+        /* Ensuring each row fits fully on one page by breaking after groups of rows */
+        .order-grid > .order-details:nth-child(6n) {
+            page-break-after: always; /* Force a new page every 4 orders */
+        }
+
+        h1 { display: none; } /* Hide the title in print view */
+    }
+</style>
+
+{% endblock %}

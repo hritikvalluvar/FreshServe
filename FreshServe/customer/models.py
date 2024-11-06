@@ -2,14 +2,41 @@ from django.db import models
 from decimal import Decimal
 import random, string
 from django.core.validators import RegexValidator
+from django.utils import timezone
 
-    
+class OrderAvailability(models.Model):
+    date = models.DateField(unique=True)
+
+    def __str__(self):
+        return f"Orders available for {self.date.strftime('%Y-%m-%d')}"
+        
 class GateClosed(models.Model):
     is_collecting_orders = models.BooleanField(default=True)  
 
+    def __str__(self):
+        return f"Collecting Orders: {self.is_collecting_orders}"
+    
+    def save(self, *args, **kwargs):
+        # Check if is_collecting_orders is set to False, then clear OrderAvailability
+        if not self.is_collecting_orders:
+            OrderAvailability.objects.all().delete()
+        super().save(*args, **kwargs)
+
 
 class ShopClosed(models.Model):
-    is_shop_open = models.BooleanField(default=True)  
+    is_shop_open = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Is shop open: {self.is_shop_open}"
+    
+    def save(self, *args, **kwargs):
+        # Check if is_shop_open is set to False, then clear OrderAvailability
+        if not self.is_shop_open:
+            OrderAvailability.objects.all().delete()
+            gate, created = GateClosed.objects.get_or_create(id=1)
+            gate.is_collecting_orders = False
+            gate.save()
+        super().save(*args, **kwargs)
     
     
 class Product(models.Model):
@@ -51,12 +78,17 @@ class Order(models.Model):
     )
     is_paid = models.BooleanField(default=False)
 
+    order_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)  # Field to store order date
 
     def __str__(self):
         return f"Order {self.order_id} by {self.name}"
 
     def save(self, *args, **kwargs):
+        latest_availability = OrderAvailability.objects.last()
+        if latest_availability:
+            self.order_date = latest_availability.date
+            
         # Generate a unique 4-digit alphanumeric order ID if it doesn't already exist
         if not self.order_id:
             self.order_id = self.generate_order_id()
@@ -90,6 +122,15 @@ class Order(models.Model):
             total += convenience_fee
 
         return round(total, 2)
+    
+    def get_area_display(self):
+        """Return the human-readable name for the area."""
+        return dict(self.ORDER_AREAS).get(self.area, self.area)
+    
+    def order_items_summary(self):
+        """Generate a summary of order items with quantities and units."""
+        items = self.items.all()  # Fetch all related order items
+        return ", ".join(f"{item.product.name} ({item.quantity} {item.product.unit})" for item in items)
 
 
 

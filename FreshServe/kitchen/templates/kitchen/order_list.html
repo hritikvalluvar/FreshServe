@@ -1,0 +1,80 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>Order List</h1>
+
+<!-- Date filter form -->
+<form method="GET" action="{% url 'kitchen:order_list' %}">
+    <label for="order_date">Select Order Date:</label>
+    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit">Filter</button>
+</form>
+
+{% if selected_date %}
+    <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2> <!-- Display date in Day, Date Month Year format -->
+{% endif %}
+
+
+
+<div id="order-table">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+        <tr>
+            <th style="border: 1px solid black;">Order ID</th>
+            <th style="border: 1px solid black;">Name</th>
+            <th style="border: 1px solid black;">Address</th>
+            <th style="border: 1px solid black;">Area</th>
+            <th style="border: 1px solid black;">Order Items</th>
+            <th style="border: 1px solid black;">Paid</th>
+            <th style="border: 1px solid black;">Price</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td style="border: 1px solid black;">{{ order.order_id }}</td>
+            <td style="border: 1px solid black;">{{ order.name }}</td>
+            <td style="border: 1px solid black;">{{ order.address }}</td>
+            <td style="border: 1px solid black;">{{ order.get_area_display }}</td>
+            <td style="border: 1px solid black;">{{ order.order_items_summary }}</td>
+            <td style="border: 1px solid black;">{% if order.is_paid %}✅{% else %}❌{% endif %}</td>
+            <td style="border: 1px solid black;">₹{{ order.price }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No orders available.</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="6" style="border: 1px solid black; text-align: right;"><strong>Total:</strong></td>
+            <td style="border: 1px solid black;"><strong>₹{{ sum }}</strong></td>
+        </tr>
+    </table>
+</div>
+
+<button onclick="printTable()" style="margin-bottom: 20px;">Print Orders</button>
+
+<script>
+function printTable() {
+    var printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Order List</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+    printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
+    printWindow.document.write('</style></head><body>');
+    printWindow.document.write('<h1>Order List</h1>');
+    
+    // Get the selected date and include it as the title in print
+    if (document.getElementById("date-title")) {
+        var selectedDateTitle = document.getElementById("date-title").innerHTML;
+        printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+    }
+
+    // Print the table
+    var tableHTML = document.getElementById("order-table").outerHTML;
+    printWindow.document.write(tableHTML);
+    printWindow.document.write('</body></html>');
+
+    printWindow.document.close(); // Close the document
+    printWindow.print(); // Trigger the print dialog
+}
+</script>
+    
+{% endblock %}

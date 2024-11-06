@@ -1,39 +1,48 @@
-from django.shortcuts import render, redirect # type: ignore
-from django.views import View # type: ignore
-from .models import Product, GateClosed, ShopClosed, Order, OrderItem
+# Standard library imports
 from decimal import Decimal, ROUND_DOWN
-from django.http import JsonResponse
-from django.contrib import messages
 import json
+
+# Third-party imports
 import razorpay
 from django.conf import settings
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views import View
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+# Local application imports
+from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
+
+
 
 class Index(View):
     def get(self, request, *args, **kwargs):
         gate = GateClosed.objects.first()  
-        if gate and not gate.is_collecting_orders:
-            return render(request, 'customer/page_closed.html') 
-        
         shop = ShopClosed.objects.first()  
-        if shop and not shop.is_shop_open:
-            return render(request, 'customer/page_closed.html') 
+        order_date = OrderAvailability.objects.last().date if OrderAvailability.objects.last() else None
 
-        return render(request, 'customer/index.html')
+        context = {
+            'gate': gate,
+            'shop': shop,
+            'order_date': order_date
+        }
+
+        return render(request, 'customer/index.html', context)
 
     
 class About(View):
     def get(self, request, *args, **kwargs):
-        shop = ShopClosed.objects.first()  
-        if shop and not shop.is_shop_open:
-            return render(request, 'customer/page_closed.html') 
         
         return render(request, 'customer/about.html')
     
 
 class Orders(View):
     def get(self, request, *args, **kwargs):
+        shop = ShopClosed.objects.first()  
+        if shop and not shop.is_shop_open:
+            return render(request, 'customer/page_closed.html') 
+        
         # Fetch available products
         products = Product.objects.filter(available=True)
         
@@ -67,7 +76,6 @@ class Orders(View):
 
         grand_total = grand_total.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
         if grand_total < 100:
-            messages.info(request, 'Minimum cart value should be ₹100!')
             return render(request, 'customer/order.html', {
                 'products': products,
             })
@@ -183,3 +191,54 @@ class PaymentSuccess(View):
             return JsonResponse({'error': 'Signature verification failed'}, status=400)
         except Exception as e:
             return JsonResponse({'error': 'An error occurred while verifying the payment'}, status=500)
+        
+
+from django.shortcuts import render, redirect
+from django.contrib.admin.views.decorators import staff_member_required
+from .models import ShopClosed, GateClosed, OrderAvailability
+from django.utils import timezone
+from datetime import datetime
+
+
+def shop_management_view(request):
+    # Retrieve or initialize ShopClosed and GateClosed models
+    shop_status, _ = ShopClosed.objects.get_or_create(pk=1)
+    gate_status, _ = GateClosed.objects.get_or_create(pk=1)
+    selected_date = None  
+
+    if request.method == 'POST':
+        selected_date = request.POST.get("order_date")
+        if isinstance(selected_date, str):
+            selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+
+        if 'open_shop' in request.POST and selected_date:
+            shop_status.is_shop_open = True
+            gate_status.is_collecting_orders = True
+            
+            OrderAvailability.objects.all().delete()  # Delete old records
+            OrderAvailability.objects.create(date=selected_date)
+
+            shop_status.save()
+            gate_status.save()
+        elif 'close_shop' in request.POST:
+            shop_status.is_shop_open = False
+            shop_status.save()
+        elif 'close_gate' in request.POST:
+            gate_status.is_collecting_orders = False
+            gate_status.save()
+
+        return redirect('shop_management')  # Redirect to avoid resubmission on refresh
+
+    # Fetch the OrderAvailability date if the shop is open
+    order_availability = OrderAvailability.objects.last()
+    order_date = order_availability.date if order_availability else None
+
+
+    # Context for rendering the template
+    context = {
+        'shop_open': shop_status.is_shop_open,
+        'gate_open': gate_status.is_collecting_orders,
+        'order_date': order_date if order_date else None,
+    }
+
+    return render(request, 'admin/shop_management.html', context)

@@ -1,0 +1,78 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1>Shop Management</h1>
+    {% if order_date %}
+        <h2>Shop is open for {{ order_date|date:"l, j F Y" }}</h2>
+    {% else %}
+        <h2>No Order Date Selected</h2>
+    {% endif %}
+    
+    <div class="status-indicators">
+        <p>Shop Status:
+            {% if shop_open %}
+                <span style="color: green;">&#9679; Open</span>
+            {% else %}
+                <span style="color: red;">&#9679; Closed</span>
+            {% endif %}
+        </p>
+        <p>Gate Status:
+            {% if gate_open %}
+                <span style="color: green;">&#9679; Open for Orders</span>
+            {% else %}
+                <span style="color: red;">&#9679; Closed for Orders</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        
+        {% if not shop_open and not gate_open %}
+            <label for="order-date">Select Order Date:</label>
+            <input type="date" id="order-date" name="order_date" required>
+        {% endif %}
+        
+        <!-- Action Buttons -->
+        <div style="margin-top: 15px;">
+            <!-- "Open Shop" button depends on date selection -->
+            <button type="submit" name="open_shop" class="button" id="open-shop-btn" 
+                {% if not dateField.value %} disabled {% endif %}>
+                Open Shop
+            </button>
+            
+            <!-- "Close Shop" and "Close Gate" buttons depend on their statuses -->
+            <button type="submit" name="close_shop" class="button" id="close-shop-btn" 
+                {% if not shop_open %} disabled {% endif %}>
+                Close Shop
+            </button>
+            
+            <button type="submit" name="close_gate" class="button" id="close-gate-btn" 
+                {% if not gate_open %} disabled {% endif %}>
+                Close Gate for Orders
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Enable "Open Shop" button only when date is selected
+    const dateField = document.getElementById("order-date");
+    const openShopButton = document.getElementById("open-shop-btn");
+
+    dateField.addEventListener("change", function() {
+        openShopButton.disabled = !dateField.value; // Enable only if date is selected
+    });
+</script>
+
+<style>
+    /* Style disabled buttons to appear greyed out */
+    button:disabled {
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}

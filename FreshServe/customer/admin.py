@@ -1,5 +1,5 @@
 from django.contrib import admin 
-from .models import Product, GateClosed, ShopClosed, Order, OrderItem
+from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
 from django.utils.html import format_html
 
 class ProductAdmin(admin.ModelAdmin):
@@ -46,3 +46,5 @@ admin.site.register(GateClosed)
 admin.site.register(ShopClosed)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem)
+
+admin.site.register(OrderAvailability)
