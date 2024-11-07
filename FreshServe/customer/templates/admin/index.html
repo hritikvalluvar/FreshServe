@@ -1,0 +1,16 @@
+{% extends 'admin/index.html' %}
+
+{% block content %}
+    <div class="module">
+        <h2>Welcome to the Kitchen Admin Portal</h2>
+        <p>Click the buttons below to manage various kitchen functions:</p>
+
+        <!-- Links to custom views -->
+        <a href="{% url 'admin:shop_management' %}" class="button default">Go to Shop Management</a>
+        <a href="{% url 'admin:order_list' %}" class="button default">View Orders</a>
+        <a href="{% url 'admin:packaging_bay' %}" class="button default">Go to Packaging Bay</a>
+        <a href="{% url 'admin:kitchen_view' %}" class="button default">Go to Kitchen View</a>
+    </div>
+
+    {{ block.super }}  <!-- Ensure other content from the base template is also rendered -->
+{% endblock %}

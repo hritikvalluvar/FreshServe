@@ -3,6 +3,13 @@
 {% block content %}
 <h1>Packaging Bay View</h1>
 
+<!-- Date filter form -->
+<form method="GET" action="{% url 'admin:packaging_bay' %}">
+    <label for="order_date">Select Order Date:</label>
+    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit">Filter</button>
+</form>
+
 <!-- Button to print all orders at once -->
 <button onclick="printAllOrders()">Print All Orders</button>
 
@@ -10,7 +17,7 @@
     {% for order in orders %}
     <div class="order-details" id="order-{{ order.order_id }}">
         <h2>Order #{{ order.order_id }}</h2>
-        <h3> {{order.order_date|date:"l, d F Y" }}</h3>
+        <h3>{{ order.order_date|date:"l, d F Y" }}</h3>
         <p><strong>Name:</strong> {{ order.name }}</p>
         <p><strong>House No:</strong> {{ order.address }}</p>
         <p><strong>Area:</strong> {{ order.get_area_display }}</p>
@@ -27,6 +34,8 @@
         <!-- Button to print this specific order -->
         <button onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
     </div>
+    {% empty %}
+    <p>No orders available for the selected date.</p>
     {% endfor %}
 </div>
 

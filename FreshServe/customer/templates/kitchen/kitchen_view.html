@@ -4,7 +4,7 @@
 <h1>Kitchen View</h1>
 
 <!-- Date filter form -->
-<form method="GET" action="{% url 'kitchen:kitchen_view' %}">
+<form method="GET" action="{% url 'admin:kitchen_view' %}">
     <label for="order_date">Select Order Date:</label>
     <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
     <button type="submit">Filter</button>
