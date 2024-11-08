@@ -1,13 +1,13 @@
 {
     "builds": [{
-        "src": "FreshServe/wsgi.py",
+        "src": "FreshServe/FreshServe/wsgi.py",
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     }],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "FreshServe/wsgi.py"
+            "dest": "FreshServe/FreshServe/wsgi.py"
         }
     ]
 }
