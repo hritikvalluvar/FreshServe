@@ -41,7 +41,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     # Own apps
     'customer',
-    'kitchen',
     # Pre-installed apps
     'django.contrib.admin',
     'django.contrib.auth',

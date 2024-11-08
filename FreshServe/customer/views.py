@@ -2,22 +2,36 @@
 from decimal import Decimal, ROUND_DOWN
 import json
 
-# Django imports
+
 from datetime import datetime
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.utils import timezone
 
-# Third-party imports
+
 import razorpay
 from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import render
 from django.views import View
+from django.core.mail import send_mail
+from django.contrib import messages
 
 
 # Local application imports
 from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
 
+
+
+class ContactView(View):
+    template_name = 'customer/contact.html'
+
+    def get(self, request):
+        # Render the contact form on GET request
+        return render(request, self.template_name)
+
+
+def menu(request):
+    products = Product.objects.all()  # Fetch all products
+    return render(request, 'customer/menu.html', {'products': products})
 
 
 class Index(View):
@@ -104,13 +118,14 @@ class Orders(View):
 class ConfirmOrder(View):
     def post(self, request, *args, **kwargs):
         try:
-            # print("POST data:", request.POST)
-
+            # Collect customer information
             name = request.POST.get('name')
             address = request.POST.get('address')
             area = request.POST.get('area')
             phone_number = request.POST.get('customer_phone')
 
+            grand_total = Decimal(request.POST.get('grand_total', 0))
+            
             # Create the order and order items
             order = Order.objects.create(
                 name=name,
@@ -129,40 +144,35 @@ class ConfirmOrder(View):
                     product_id=product.id,
                     quantity=quantities[product.id],
                 )
-                    
 
             # Setup Razorpay client
             client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
-            
+
             # Create Razorpay order
             razorpay_order = client.order.create({
                 'amount': int(order.price * 100),  # Convert to paisa
                 'currency': 'INR',
                 'payment_capture': '1'
             })
-            
+
             # Save Razorpay order ID in the order
             order.razorpay_order_id = razorpay_order['id']
             order.save()
-
-            # Render payment page with Razorpay order details
+            # Pass the Razorpay order ID to the payment page
             context = {
                 'order': order,
                 'razorpay_order_id': razorpay_order['id'],
                 'razorpay_merchant_key': settings.RAZORPAY_API_KEY,
-                'amount': order.price,
+                'amount': grand_total,
                 'currency': 'INR'
             }
 
-            print(context)
             return render(request, 'customer/payment_page.html', context)
 
-        except json.JSONDecodeError as e:
-            print("JSON Decode Error:", e)
-            return JsonResponse({'error': 'Invalid product data'}, status=400)
         except Exception as e:
             print("Error:", e)
             return JsonResponse({'error': 'An error occurred while processing your order'}, status=500)
+
 class PaymentSuccess(View):
     def post(self, request, *args, **kwargs):
         # Retrieve payment details and verify signature
@@ -171,8 +181,9 @@ class PaymentSuccess(View):
             payment_id = request.POST.get('razorpay_payment_id')
             signature = request.POST.get('razorpay_signature')
 
-            # Fetch order and verify the payment signature
+            # Fetch order based on Razorpay order ID
             order = Order.objects.get(razorpay_order_id=order_id)
+
             client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
 
             # Signature verification
@@ -183,18 +194,33 @@ class PaymentSuccess(View):
             }
             client.utility.verify_payment_signature(params_dict)
 
-            # Save payment details
+
+            # Payment was successful, now save the order
             order.is_paid = True
             order.razorpay_payment_id = payment_id
             order.razorpay_signature = signature
+
+            # Create order items now that payment is confirmed
+            products = Product.objects.filter(available=True)
+            for product in products:
+                quantity = Decimal(request.POST.get(f'quantity_{product.id}', 0))
+                if quantity > 0:
+                    OrderItem.objects.create(
+                        order=order,
+                        product_id=product.id,
+                        quantity=quantity,
+                    )
+
             order.save()
 
+            # Render the order success page with the confirmed order
             return render(request, 'customer/order_success.html', {'order': order})
 
         except razorpay.errors.SignatureVerificationError as e:
             return JsonResponse({'error': 'Signature verification failed'}, status=400)
         except Exception as e:
             return JsonResponse({'error': 'An error occurred while verifying the payment'}, status=500)
+
         
 
 
@@ -252,11 +278,10 @@ def order_list(request):
     # Filter orders by selected date if provided
     if selected_date:
         selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()  # Convert to date object
-        print(selected_date, timezone.now().date())
     else:
         selected_date = timezone.now().date()  # No date selected
 
-    orders = orders.filter(order_date=selected_date)  # Filter by order_date
+    orders = orders.filter(order_date=selected_date, is_paid=True)  # Filter by order_date
 
     total = sum(order.price for order in orders)  # Calculate total price of orders
 
@@ -266,9 +291,6 @@ def order_list(request):
         'selected_date': selected_date,  # Pass the selected date to the template
     })
 
-def order_detail(request, order_id):
-    order = Order.objects.get(order_id=order_id)
-    return render(request, 'kitchen/order_detail.html', {'order': order})
 
 
 
@@ -298,7 +320,7 @@ def kitchen_view(request):
     }
 
     # Process each order based on the selected order_date
-    orders = Order.objects.filter(order_date=order_date)
+    orders = Order.objects.filter(order_date=order_date, is_paid=True)
 
     for order in orders:
         for item in order.items.all():
@@ -351,6 +373,7 @@ def kitchen_view(request):
 def packaging_bay_view(request):
     # Retrieve all orders
     orders = Order.objects.all().order_by('-created_at')
+    orders = orders.filter(is_paid=True)
     
     context = {
         'orders': orders,

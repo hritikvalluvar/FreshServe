@@ -69,6 +69,8 @@
             <small class="form-text text-muted">Enter a 10-digit phone number.</small>
         </div>
 
+        <input type="hidden" name="grand_total" value="{{ grand_total|floatformat:2 }}">
+
     
         {% for item in selected_products_with_quantities %}
             <tr>

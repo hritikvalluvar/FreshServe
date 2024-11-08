@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <form method="POST" action="{% url 'order' %}"> <!-- Form to submit quantities -->
+    <form id="orderForm" method="POST" action="{% url 'order' %}"> <!-- Form to submit quantities -->
         {% csrf_token %}
         <div class="overflow-auto" style="max-height: calc(80vh - 150px); max-width: 100%; overflow-x: hidden;"> <!-- Dynamic height for products -->
             <div class="row g-3">
@@ -18,15 +18,16 @@
                                 </div>
                                 <div class="d-flex flex-column align-items-end">
                                     <label for="quantity-{{ product.id }}" class="form-label">Quantity</label>
-                                    <div class="d-flex flex-column align-items-end"> <!-- Align to the right -->
-                                        <div class="input-group mb-2" style="max-width: 100%;"> <!-- Ensure no horizontal overflow -->
+                                    <div class="d-flex flex-column align-items-end">
+                                        <div class="input-group mb-2" style="max-width: 100%;">
                                             <input type="number" name="quantity-{{ product.id }}" id="quantity-{{ product.id }}"
                                                    class="form-control text-center" value="0" min="0" readonly
-                                                   step="{% if product.name in 'Steamed Idli, Ragi Idli' %}5{% elif product.name in 'Idli/Dosa Batter, Ragi Batter' %}0.5{% else %}1{% endif %}">
-                                            <span class="input-group-text">{{ product.unit }}</span> <!-- Display unit here -->
+                                                   step="{% if product.name in 'Steamed Idli, Ragi Idli' %}5{% elif product.name in 'Idli/Dosa Batter, Ragi Batter' %}0.5{% else %}1{% endif %}"
+                                                   data-price="{{ product.price }}">
+                                            <span class="input-group-text">{{ product.unit }}</span>
                                         </div>
-                                        <button type="button" class="btn btn-light" onclick="increment('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #a3d2ca; color: #000;">+</button> <!-- Pastel Green -->
-                                        <button type="button" class="btn btn-light" onclick="decrement('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #ff6f61; color: #000;">−</button> <!-- Pastel Red -->
+                                        <button type="button" class="btn btn-light" onclick="increment('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #a3d2ca; color: #000;">+</button>
+                                        <button type="button" class="btn btn-light" onclick="decrement('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #ff6f61; color: #000;">−</button>
                                     </div>
                                 </div>
                             </div>
@@ -36,9 +37,14 @@
             </div>
         </div>
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary btn-lg">Proceed</button> <!-- Proceed button -->
+            <button type="button" onclick="validateOrder()" class="btn btn-primary btn-lg">Proceed</button>
         </div>
     </form>
+</div>
+
+<!-- Popup for minimum order warning -->
+<div id="minOrderAlert" class="alert alert-warning text-center" role="alert" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: auto; max-width: 300px;">
+    Minimum order should be ₹100.
 </div>
 
 {% block extra_scripts %}
@@ -48,12 +54,37 @@ function increment(id) {
     const input = document.getElementById(`quantity-${id}`);
     const step = parseFloat(input.getAttribute('step')) || 1;
     input.value = parseFloat(input.value) + step;
+    calculateTotal();
 }
 
 function decrement(id) {
     const input = document.getElementById(`quantity-${id}`);
     const step = parseFloat(input.getAttribute('step')) || 1;
-    input.value = Math.max(0, parseFloat(input.value) - step); // Ensures it doesn't go below 0
+    input.value = Math.max(0, parseFloat(input.value) - step);
+    calculateTotal();
+}
+
+// Function to calculate the total order price
+function calculateTotal() {
+    let total = 0;
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        const quantity = parseFloat(input.value) || 0;
+        const price = parseFloat(input.getAttribute('data-price')) || 0;
+        total += quantity * price;
+    });
+    return total;
+}
+
+// Validate order price before submission
+function validateOrder() {
+    const total = calculateTotal();
+    if (total < 100) {
+        const alertBox = document.getElementById('minOrderAlert');
+        alertBox.style.display = 'block';
+        setTimeout(() => alertBox.style.display = 'none', 3000);
+    } else {
+        document.getElementById('orderForm').submit();
+    }
 }
 </script>
 {% endblock %}

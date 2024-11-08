@@ -3,26 +3,54 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Complete Your Payment</h1>
-    <p>Order Total: ₹{{ amount }}</p>
+    <div class="card shadow-sm p-4">
+        <h1 class="text-center mb-4" style="color: #333;">Complete Your Payment</h1>
+        
+        <div class="text-center">
+            <p class="lead mb-3">Order Total: <strong>₹{{ amount }}</strong></p>
+            <p class="text-muted">Please complete the payment to confirm your order.</p>
+        </div>
 
-    <form action="{% url 'order_success' %}" method="POST">
-        {% csrf_token %}
-        <script
-            src="https://checkout.razorpay.com/v1/checkout.js"
-            data-key="{{ razorpay_merchant_key }}"
-            data-amount="{{ amount|floatformat:2 }}00"
-            data-currency="INR"
-            data-order_id="{{ razorpay_order_id }}"
-            data-buttontext="Pay Now"
-            data-name="Tanuja's BatterHouse" 
-            data-description="Order Payment"
-            data-prefill.name="{{ order.name }}"
-            data-prefill.contact="{{ order.phone_number }}"
-            data-theme.color="#528FF0">
-        </script>
-        <input type="hidden" name="razorpay_order_id" value="{{ razorpay_order_id }}">
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    </form>
+        <div class="d-flex justify-content-center mt-4">
+            <form action="{% url 'order_success' %}" method="POST">
+                {% csrf_token %}
+                <script
+                    src="https://checkout.razorpay.com/v1/checkout.js"
+                    data-key="{{ razorpay_merchant_key }}"
+                    data-amount="{{ amount|floatformat:2 }}00"
+                    data-currency="INR"
+                    data-order_id="{{ razorpay_order_id }}"
+                    data-buttontext="Pay Now"
+                    data-name="Tanuja's BatterHouse"
+                    data-description="Order Payment"
+                    data-prefill.name="{{ order.name }}"
+                    data-prefill.contact="{{ order.phone_number }}"
+                    data-theme.color="#528FF0">
+                </script>
+                <input type="hidden" name="razorpay_order_id" value="{{ razorpay_order_id }}">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            </form>
+        </div>
+    </div>
 </div>
+
+<!-- Additional styles for customization -->
+<style>
+    .container {
+        max-width: 600px;
+    }
+    .card {
+        background-color: #f9f9f9;
+        border: none;
+        border-radius: 8px;
+    }
+    h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+    .lead {
+        font-size: 1.2rem;
+        color: #333;
+    }
+</style>
 {% endblock %}
