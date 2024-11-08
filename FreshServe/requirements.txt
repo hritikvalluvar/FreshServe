@@ -1,0 +1,15 @@
+asgiref @ file:///home/conda/feedstock_root/build_artifacts/asgiref_1711268871457/work
+certifi==2024.8.30
+charset-normalizer==3.4.0
+Django @ file:///home/conda/feedstock_root/build_artifacts/django_1728493591029/work
+django-admin-rangefilter==0.13.2
+django-extensions==3.2.3
+idna==3.10
+pillow==11.0.0
+pyparsing==3.2.0
+razorpay==1.4.2
+requests==2.32.3
+setuptools==75.3.0
+sqlparse @ file:///home/conda/feedstock_root/build_artifacts/sqlparse_1721304206023/work
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1717802530399/work
+urllib3==2.2.3
