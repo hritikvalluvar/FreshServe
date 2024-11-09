@@ -85,7 +85,11 @@ WSGI_APPLICATION = 'FreshServe.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
+        'NAME': 'postgres',
+        'USER': 'postgres.ngoxppmzvxlzvomjmzch',
+        'PASSWORD': 'tiQneh-zizqov-7motxa',
+        'PORT': '6543',
     }
 }
 

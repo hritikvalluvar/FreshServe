@@ -123,6 +123,7 @@ class ConfirmOrder(View):
             address = request.POST.get('address')
             area = request.POST.get('area')
             phone_number = request.POST.get('customer_phone')
+            order_date = OrderAvailability.objects.last().date
 
             grand_total = Decimal(request.POST.get('grand_total', 0))
             
@@ -131,7 +132,8 @@ class ConfirmOrder(View):
                 name=name,
                 address=address,
                 area=area,
-                phone_number=phone_number
+                phone_number=phone_number,
+                order_date=order_date,
             )
 
             quantities = {}
