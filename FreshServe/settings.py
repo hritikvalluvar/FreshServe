@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'FreshServe.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
         'NAME': 'postgres',
         'USER': 'postgres.ngoxppmzvxlzvomjmzch',
