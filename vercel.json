@@ -11,7 +11,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "FreshServe/wsgi.py"
+            "dest": "manage.py"
         }
     ]
 }
