@@ -24,5 +24,6 @@ urlpatterns = [
     path('order/confirm/', ConfirmOrder.as_view(), name='order_confirm'),
     path('order/success/', PaymentSuccess.as_view(), name='order_success'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -30,7 +30,7 @@ class ContactView(View):
 
 
 def menu(request):
-    products = Product.objects.all()  # Fetch all products
+    products = Product.objects.all().order_by('id')  # Fetch all products
     return render(request, 'customer/menu.html', {'products': products})
 
 
@@ -62,7 +62,7 @@ class Orders(View):
             return render(request, 'customer/page_closed.html') 
         
         # Fetch available products
-        products = Product.objects.filter(available=True)
+        products = Product.objects.filter(available=True).order_by('id')
         
         return render(request, 'customer/order.html', {
             'products': products,
