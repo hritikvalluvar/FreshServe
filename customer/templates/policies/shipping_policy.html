@@ -1,0 +1,113 @@
+{% extends "customer/base.html" %}
+
+{% block title %}Shipping Policy - Tanuja's BatterHouse{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .content {
+        max-width: 900px;
+        margin: 2em auto;
+        padding: 2em;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+    }
+
+    h1 {
+        font-size: 2em;
+        margin-bottom: 0.5em;
+        text-align: center;
+        color: #333;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        margin-top: 1.5em;
+        color: #555;
+    }
+
+    p {
+        line-height: 1.6;
+        margin-bottom: 1em;
+        color: #555;
+    }
+
+    a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .content p small {
+        color: #777;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5em;
+    }
+
+    .card h2 {
+        font-size: 1.4em;
+        color: #333;
+    }
+
+    .card p {
+        color: #555;
+    }
+</style>
+
+<div class="content">
+    <h1>Shipping Policy</h1>
+
+    <div class="card">
+        <h2>1. Delivery Areas</h2>
+        <p>We currently offer local delivery only in the Old Township, New Township, and Khore Kheri areas of Panipat Refinery Township. We do not offer shipping to other areas.</p>
+    </div>
+
+    <div class="card">
+        <h2>2. Order Processing</h2>
+        <p>Orders are taken for a specific delivery date. All products are freshly made on the day of delivery and are dispatched as soon as they are ready.</p>
+    </div>
+    
+    <div class="card">
+        <h2>3. Delivery Times</h2>
+        <p>All orders are delivered on the specified delivery date. Products will be delivered as soon as they are made, so please ensure someone is available to receive the delivery on that day.</p>
+    </div>
+    
+
+    <div class="card">
+        <h2>4. Shipping Costs</h2>
+        <p>We charge a nominal fee of ₹10 on all orders to cover fuel and labor costs. Currently, we only offer delivery within Panipat Refinery Township.</p>
+    </div>    
+    
+
+    <div class="card">
+        <h2>5. Damaged or Spoilt Orders</h2>
+        <p>If your order arrives damaged or spoiled, we will take full responsibility and provide a free replacement or refund. Please contact us within 3-4 hours of receiving your order to initiate the process.</p>
+    </div>
+
+    <div class="card">
+        <h2>6. Contact Us</h2>
+        <p>If you have any questions regarding our shipping policy, please contact us at <a href="mailto:tanujabatterhouse@gmail.com">tanujabatterhouse@gmail.com</a>.</p>
+    </div>
+
+    <div class="card">
+        <h2>Last updated: November 10, 2024</h2>
+    </div>
+</div>
+{% endblock %}

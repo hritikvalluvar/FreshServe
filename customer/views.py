@@ -381,3 +381,16 @@ def packaging_bay_view(request):
         'orders': orders,
     }
     return render(request, 'kitchen/packaging_bay_view.html', context)
+
+
+def terms(request):
+    return render(request, 'policies/terms_and_conditions.html')
+
+def privacy(request):
+    return render(request, 'policies/privacy_policy.html')
+
+def refund(request):
+    return render(request, 'policies/refund_policy.html')
+
+def shipping(request):
+    return render(request, 'policies/shipping_policy.html')

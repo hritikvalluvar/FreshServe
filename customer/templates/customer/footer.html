@@ -1,6 +1,39 @@
-<footer class="page-footer font-small fixed-bottom" style="background-color: #ffb3b3;">
-    <div class="footer-copyright text-center py-3">&copy; 2024 copyright:
-        <a href="/">Home</a>
-        <a class="ml-3" href="/contact">Contact</a>  <!-- Added contact link -->
+<footer class="page-footer font-small" style="background-color: #ffb3b3;">
+    <div class="container text-center py-3">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="mb-1">&copy; 2024 Tanuja Valluvar's Catering</p>
+            </div>
+            <div class="col-md-12">
+                <nav class="footer-nav">
+                    <a href="/" class="footer-link">Home</a> |
+                    <a href="/contact" class="footer-link">Contact</a> |
+                    <a href="{% url 'terms' %}" class="footer-link">Terms and Conditions</a> |
+                    <a href="{% url 'privacy' %}" class="footer-link">Privacy Policy</a> |
+                    <a href="{% url 'refund' %}" class="footer-link">Refund Policy</a> |
+                    <a href="{% url 'shipping' %}" class="footer-link">Shipping Policy</a>
+                </nav>
+            </div>
+        </div>
     </div>
 </footer>
+
+<style>
+    /* Footer Styles */
+    .page-footer {
+        color: #333;
+        font-size: 14px;
+    }
+
+    .footer-link {
+        color: #333;
+        text-decoration: none;
+        margin: 0 5px;
+        font-weight: 500;
+    }
+
+    .footer-link:hover {
+        color: #ffb3b3;
+        text-decoration: underline;
+    }
+</style>

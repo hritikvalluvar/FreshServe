@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from customer.views import Index, About, Orders, ConfirmOrder, PaymentSuccess,  ContactView, menu
+from customer.views import Index, About, Orders, ConfirmOrder, PaymentSuccess,  ContactView, menu, terms, privacy, refund, shipping
 from django.contrib.auth import views as auth_views
 from customer.admin import site
 
@@ -23,6 +23,11 @@ urlpatterns = [
     path('order/', Orders.as_view(), name='order'),
     path('order/confirm/', ConfirmOrder.as_view(), name='order_confirm'),
     path('order/success/', PaymentSuccess.as_view(), name='order_success'),
+
+    path('terms-and-conditions/', terms, name='terms'),
+    path('privacy-policy/', privacy, name='privacy'),
+    path('refund-policy/', refund, name='refund'),
+    path('shipping-policy/', shipping, name='shipping'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

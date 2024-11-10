@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, inital-scale=1.0, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         <title>Tanuja's BatterHouse</title>
 
         <!-- Font Awesome -->
@@ -13,13 +13,36 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
         <!-- Material Design Bootstrap -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+
+        <style>
+            /* Ensure full height page layout */
+            html, body {
+                height: 100%;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Main content wrapper to take available space */
+            .content-wrapper {
+                flex: 1;
+            }
+
+            /* Footer positioning at the bottom */
+            footer {
+                margin-top: auto;
+            }
+        </style>
     </head>
     <body>
 
         {% include 'customer/navigation.html' %}
-        {% block content %}
+        <div class="content-wrapper">
+            {% block content %}
+            <!-- Main content goes here -->
+            {% endblock content %}
+        </div>
 
-        {% endblock content %}
         {% include 'customer/footer.html' %}
 
         <!-- JQuery -->
