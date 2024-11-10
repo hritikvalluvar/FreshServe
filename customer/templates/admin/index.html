@@ -5,11 +5,13 @@
         <h2>Welcome to the Kitchen Admin Portal</h2>
         <p>Click the buttons below to manage various kitchen functions:</p>
 
-        <!-- Links to custom views -->
-        <a href="{% url 'admin:shop_management' %}" class="button default">Go to Shop Management</a>
-        <a href="{% url 'admin:order_list' %}" class="button default">View Orders</a>
-        <a href="{% url 'admin:packaging_bay' %}" class="button default">Go to Packaging Bay</a>
-        <a href="{% url 'admin:kitchen_view' %}" class="button default">Go to Kitchen View</a>
+        <!-- Flexbox for better button layout with responsive design -->
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <a href="{% url 'admin:shop_management' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">Go to Shop Management</a>
+            <a href="{% url 'admin:order_list' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">View Orders</a>
+            <a href="{% url 'admin:packaging_bay' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">Go to Packaging Bay</a>
+            <a href="{% url 'admin:kitchen_view' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">Go to Kitchen View</a>
+        </div>
     </div>
 
     {{ block.super }}  <!-- Ensure other content from the base template is also rendered -->

@@ -49,7 +49,7 @@ class OrderItemInline(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('order_id', 'name', 'address', 'area', 'order_items_summary', 'price')
-    list_filter = ('area',)
+    list_filter = ('area', 'is_paid')
     search_fields = ('name', 'address')
     ordering = ['-created_at']
     inlines = [OrderItemInline]

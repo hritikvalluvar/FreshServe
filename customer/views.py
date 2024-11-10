@@ -93,10 +93,8 @@ class Orders(View):
                 })
 
         grand_total = grand_total.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
-        if grand_total < 100:
-            return render(request, 'customer/order.html', {
-                'products': products,
-            })
+        # if grand_total < 100:
+            # return redirect('order')
         
         delivery_fee = Decimal('10.00')
 

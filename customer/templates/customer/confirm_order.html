@@ -50,7 +50,8 @@
         <div class="form-group pt-3">
             <label for="address">House Number</label>
             <input required class="form-control" type="text" placeholder="example: D 1049" name="address" id="address"
-                oninput="this.value = this.value.toUpperCase()" />
+                oninput="this.value = this.value.toUpperCase(); validateAddressLength(this)" />
+            <small id="addressWarning" class="form-text text-danger" style="display:none;">Enter only quarter type and quarter number, e.g., "D 1049".</small>
         </div>
 
         <div class="form-group pt-3">
@@ -65,30 +66,57 @@
 
         <div class="form-group pt-3">
             <label for="customer_phone">Phone Number</label>
-            <input required class="form-control" type="tel" pattern="[0-9]{10}" placeholder="10-digit Mobile Number" name="customer_phone" id="customer_phone" />
-            <small class="form-text text-muted">Enter a 10-digit phone number.</small>
+            <input required class="form-control" type="tel" pattern="[0-9]{10}" placeholder="10-digit Mobile Number" name="customer_phone" id="customer_phone" 
+                oninput="validatePhoneNumber(this)" />
+            <small id="phoneFeedback" class="form-text" style="display:none;"></small>
         </div>
 
         <input type="hidden" name="grand_total" value="{{ grand_total|floatformat:2 }}">
 
-    
         {% for item in selected_products_with_quantities %}
-            <tr>
-                <input type="hidden" name="quantity_{{ item.product_id }}" value="{{ item.quantity }}">
-            </tr>
+            <input type="hidden" name="quantity_{{ item.product_id }}" value="{{ item.quantity }}">
         {% endfor %}
-
-
 
         <button type="submit" class="btn btn-dark mt-4 mb-5">Place Order</button>
     </form>
 </div>
+
 <script>
 function toCamelCase(str) {
     return str
-        .split(' ')  // Split on spaces
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter, lowercase the rest
-        .join(' '); // Join back with spaces
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
+
+function validateAddressLength(input) {
+    const warning = document.getElementById("addressWarning");
+    if (input.value.length > 20) {
+        warning.style.display = "block";
+    } else {
+        warning.style.display = "none";
+    }
+}
+
+function validatePhoneNumber(input) {
+    const phoneFeedback = document.getElementById("phoneFeedback");
+    const phoneValue = input.value;
+
+    if (phoneValue.length > 10) {
+        input.classList.add("is-invalid");
+        phoneFeedback.style.display = "block";
+        phoneFeedback.style.color = "red";
+        phoneFeedback.textContent = "Phone number should be exactly 10 digits.";
+    } else if (phoneValue.length === 10) {
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+        phoneFeedback.style.display = "block";
+        phoneFeedback.style.color = "green";
+        phoneFeedback.textContent = "Correct phone number.";
+    } else {
+        input.classList.remove("is-invalid", "is-valid");
+        phoneFeedback.style.display = "none";
+    }
 }
 </script>
 {% endblock %}

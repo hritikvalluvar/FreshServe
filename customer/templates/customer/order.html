@@ -23,7 +23,8 @@
                                             <input type="number" name="quantity-{{ product.id }}" id="quantity-{{ product.id }}"
                                                    class="form-control text-center" value="0" min="0" readonly
                                                    step="{% if product.name == 'Sambar' or product.name in 'Peanut Chutney, Onion Chutney' %}1{% elif product.name == 'Sambar Powder' %}100{% elif product.name in 'Steamed Idli, Ragi Idli' %}5{% elif product.name in 'Idli/Dosa Batter, Ragi Batter' %}0.5{% else %}1{% endif %}"
-                                                   data-price="{{ product.price }}">
+                                                   data-price="{{ product.price }}"
+                                                   data-quantity="{{ product.quantity }}">
                                             <span class="input-group-text">{{ product.unit }}</span>
                                         </div>
                                         <button type="button" class="btn btn-light" onclick="increment('{{ product.id }}')" style="font-size: 24px; padding: 5px 15px; background-color: #a3d2ca; color: #000;">+</button>
@@ -70,7 +71,8 @@ function calculateTotal() {
     document.querySelectorAll('input[type="number"]').forEach(input => {
         const quantity = parseFloat(input.value) || 0;
         const price = parseFloat(input.getAttribute('data-price')) || 0;
-        total += quantity * price;
+        const defaultQuantity = parseFloat(input.getAttribute('data-quantity')) || 1;
+        total += (quantity * price) / defaultQuantity;
     });
     return total;
 }
