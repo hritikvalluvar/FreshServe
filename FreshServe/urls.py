@@ -3,7 +3,6 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from customer.views import Index, About, Orders, ConfirmOrder, PaymentSuccess,  ContactView, menu, terms, privacy, refund, shipping
-from django.contrib.auth import views as auth_views
 from customer.admin import site
 
 

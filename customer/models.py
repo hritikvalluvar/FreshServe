@@ -137,7 +137,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE, to_field='order_id')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.DecimalField(max_digits=5, decimal_places=1)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
