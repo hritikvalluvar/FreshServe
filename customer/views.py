@@ -330,10 +330,10 @@ def kitchen_view(request):
             # Update quantities and calculate batter for idli items
             if product_name == 'Steamed Idli':
                 category_totals['Steamed Idli']['quantity'] += quantity
-                category_totals['Steamed Idli']['batter'] += (quantity / 10) * 0.5
+                category_totals['Steamed Idli']['batter'] += (quantity / Decimal(20)) 
             elif product_name == 'Ragi Idli':
                 category_totals['Ragi Idli']['quantity'] += quantity
-                category_totals['Ragi Idli']['batter'] += (quantity / 10) * 0.5
+                category_totals['Ragi Idli']['batter'] += (quantity / Decimal(20))
             elif product_name == 'Idli/Dosa Batter':
                 category_totals['Idli/Dosa Batter']['quantity'] += quantity
                 category_totals['Idli/Dosa Batter']['batter'] += quantity
@@ -347,9 +347,9 @@ def kitchen_view(request):
     total_idli_batter = category_totals['Steamed Idli']['batter'] + category_totals['Idli/Dosa Batter']['batter']
     total_ragi_batter = category_totals['Ragi Idli']['batter'] + category_totals['Ragi Batter']['batter']
 
-    # Calculate rice needed for each batter type
-    rice_needed_for_idli_batter = round(total_idli_batter / 2.8, 2) if total_idli_batter > 0 else '-'
-    rice_needed_for_ragi_batter = round(total_ragi_batter / 2.8, 2) if total_ragi_batter > 0 else '-'
+    # Calculate rice needed for each batter type round(total_idli_batter / Decimal('2.8'), 2)
+    rice_needed_for_idli_batter = round(total_idli_batter / Decimal('2.8'), 2) if total_idli_batter > 0 else '-'
+    rice_needed_for_ragi_batter = round(total_ragi_batter / Decimal('2.8'), 2) if total_ragi_batter > 0 else '-'
 
     # Replace any zero quantities and batter values with '-'
     for category, data in category_totals.items():

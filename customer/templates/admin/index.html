@@ -1,18 +1,121 @@
 {% extends 'admin/index.html' %}
 
+{% block extrastyle %}
+<!-- Include Material Design CSS -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@material-ui/core@latest/dist/material-ui.min.css" rel="stylesheet">
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f5f5;
+        color: #424242;
+    }
+
+    .module {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .module h2 {
+        font-size: 2rem;
+        font-weight: 500;
+        color: #ffffff; /* Material Design primary color */
+        margin-bottom: 1rem;
+    }
+
+    .module p {
+        font-size: 1rem;
+        color: #757575; /* Material Design secondary text color */
+        margin-bottom: 2rem;
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-block;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        background-color: #c2c2c2;
+        color: white;
+        transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #303f9f; /* Darker background color */
+        color: #ffffff; /* Change text to white */
+        transform: translateY(-2px); /* Lift effect */
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    }
+
+    .btn:active {
+        background-color: #283593;
+        transform: translateY(1px);
+        box-shadow: none;
+    }
+
+    /* Grid Layout */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .module {
+            padding: 1.5rem;
+        }
+
+        .module h2 {
+            font-size: 1.5rem;
+        }
+
+        .grid-container {
+            grid-template-columns: 1fr; /* Stack buttons vertically on small screens */
+            gap: 1rem;
+        }
+
+        .btn {
+            font-size: 0.9rem; /* Slightly smaller text for buttons on smaller screens */
+            padding: 0.6rem 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .module {
+            margin: 1rem;
+        }
+
+        .btn {
+            font-size: 0.8rem; /* Adjust font size further for very small screens */
+            padding: 0.5rem 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    <div class="module">
-        <h2>Welcome to the Kitchen Admin Portal</h2>
-        <p>Click the buttons below to manage various kitchen functions:</p>
-
-        <!-- Flexbox for better button layout with responsive design -->
-        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-            <a href="{% url 'admin:shop_management' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">Go to Shop Management</a>
-            <a href="{% url 'admin:order_list' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">View Orders</a>
-            <a href="{% url 'admin:packaging_bay' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">Go to Packaging Bay</a>
-            <a href="{% url 'admin:kitchen_view' %}" class="button default btn btn-primary btn-lg w-100 w-sm-auto">Go to Kitchen View</a>
-        </div>
+<div class="module">
+    <h2>FreshServe Admin Portal</h2>
+    <p>Manage all kitchen-related functionalities below:</p>
+    
+    <!-- Grid layout for buttons -->
+    <div class="grid-container">
+        <a href="{% url 'admin:shop_management' %}" class="btn">Shop Management</a>
+        <a href="{% url 'admin:order_list' %}" class="btn">View Orders</a>
+        <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging Bay</a>
+        <a href="{% url 'admin:kitchen_view' %}" class="btn">Kitchen View</a>
     </div>
-
-    {{ block.super }}  <!-- Ensure other content from the base template is also rendered -->
+</div>
+{{ block.super }} <!-- Ensure other content from the base template is rendered -->
 {% endblock %}
