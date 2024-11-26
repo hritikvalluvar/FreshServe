@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y*5exa979)4r63pua)f+xpj$*46)qiqs6m97z7k1agcvueuiw1'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -86,8 +86,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
         'NAME': 'postgres',
-        'USER': 'postgres.ngoxppmzvxlzvomjmzch',
-        'PASSWORD': 'tiQneh-zizqov-7motxa',
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
         'PORT': '6543',
     }
 }
@@ -142,5 +142,5 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
-RAZORPAY_API_KEY = 'rzp_test_W7rhDyAlWufVkV'
-RAZORPAY_API_SECRET = 'k3ALBYKjqb8D7XwPx7FJFeJh'
+RAZORPAY_API_KEY = os.environ.get('RAZORPAY_API_KEY')
+RAZORPAY_API_SECRET = os.environ.get('RAZORPAY_API_SECRET')
