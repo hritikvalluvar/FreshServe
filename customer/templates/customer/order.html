@@ -2,19 +2,18 @@
 
 {% block content %}
 <div class="container mt-5">
-    <form id="orderForm" method="POST" action="{% url 'order' %}"> <!-- Form to submit quantities -->
+    <form id="orderForm" method="POST" action="{% url 'order' %}">
         {% csrf_token %}
-        <div class="overflow-auto" style="max-height: calc(80vh - 150px); max-width: 100%; overflow-x: hidden;"> <!-- Dynamic height for products -->
+        <div class="overflow-auto" style="max-height: calc(80vh - 150px); max-width: 100%; overflow-x: hidden;">
             <div class="row g-3">
                 {% for product in products %}
                     {% if product.available %}
                         <div class="col-12 mb-4">
-                            <div class="border rounded p-3 d-flex flex-row justify-content-between align-items-center h-100" style="width: 100%;">
-                                <div class="d-flex flex-column">
+                            <div class="border rounded p-3 d-flex flex-column flex-sm-row justify-content-between align-items-center h-100">
+                                <div class="d-flex flex-column align-items-center mb-3 mb-sm-0">
                                     <img src="{{ product.image }}" class="img-fluid rounded mb-2" alt="{{ product.name }}" width="100" height="100" style="object-fit: cover; border-radius: 5rem;">
-                                    <h5 class="font-weight-bold">{{ product.name }}</h5>
-                                    <p>{{ product.description }}</p>
-                                    <p><strong>₹{{ product.price }}</strong> per {{ product.quantity }} {{ product.unit }}</p>
+                                    <h5 class="font-weight-bold text-center">{{ product.name }}</h5>
+                                    <p class="text-center"><strong>₹{{ product.price }}</strong> per {{ product.quantity }} {{ product.unit }}</p>
                                 </div>
                                 <div class="d-flex flex-column align-items-end">
                                     <label for="quantity-{{ product.id }}" class="form-label">Quantity</label>
