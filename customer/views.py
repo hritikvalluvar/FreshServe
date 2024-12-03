@@ -8,7 +8,6 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 
-import razorpay
 from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
@@ -19,6 +18,27 @@ from django.contrib import messages
 # Local application imports
 from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
 
+# Standard library imports
+from decimal import Decimal, ROUND_DOWN
+import traceback
+import uuid
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views import View
+from django.conf import settings
+
+# PhonePe SDK imports
+from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
+from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
+from phonepe.sdk.pg.env import Env
+
+# Local application imports
+from .models import Product, Order, OrderItem, OrderAvailability
+
+from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
+from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
+from phonepe.sdk.pg.env import Env
 
 
 class ContactView(View):
@@ -93,22 +113,9 @@ class Orders(View):
                 })
 
         grand_total = grand_total.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
-        # if grand_total < 100:
-            # return redirect('order')
-        
-        delivery_fee = Decimal('10.00')
-
-        grand_total += delivery_fee
-        
-        # Calculate convenience fee as 2% of grand total
-        convenience_fee = grand_total / 49
-
-        grand_total += convenience_fee
 
         return render(request, 'customer/confirm_order.html', {
             'selected_products_with_quantities': selected_products_with_quantities,
-            'delivery_fee': delivery_fee,
-            'convenience_fee': convenience_fee,
             'grand_total': grand_total
         })
     
@@ -134,97 +141,80 @@ class ConfirmOrder(View):
                 order_date=order_date,
             )
 
-            quantities = {}
-            products = Product.objects.filter(available=True)
-            for product in products:
-                quantities[product.id] = Decimal(request.POST.get(f'quantity_{product.id}', 0))
-                if quantities[product.id] > 0:
-                    OrderItem.objects.create(
-                    order=order,
-                    product_id=product.id,
-                    quantity=quantities[product.id],
-                )
-
-            # Setup Razorpay client
-            client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
-
-            # Create Razorpay order
-            razorpay_order = client.order.create({
-                'amount': int(order.price * 100),  # Convert to paisa
-                'currency': 'INR',
-                'payment_capture': '1'
-            })
-
-            # Save Razorpay order ID in the order
-            order.razorpay_order_id = razorpay_order['id']
-            order.save()
-            # Pass the Razorpay order ID to the payment page
-            context = {
-                'order': order,
-                'razorpay_order_id': razorpay_order['id'],
-                'razorpay_merchant_key': settings.RAZORPAY_API_KEY,
-                'amount': grand_total,
-                'currency': 'INR'
-            }
-
-            return render(request, 'customer/payment_page.html', context)
-
-        except Exception as e:
-            print("Error:", e)
-            return JsonResponse({'error': 'An error occurred while processing your order'}, status=500)
-
-class PaymentSuccess(View):
-    def post(self, request, *args, **kwargs):
-        # Retrieve payment details and verify signature
-        try:
-            order_id = request.POST.get('razorpay_order_id')
-            payment_id = request.POST.get('razorpay_payment_id')
-            signature = request.POST.get('razorpay_signature')
-
-            # Fetch order based on Razorpay order ID
-            order = Order.objects.get(razorpay_order_id=order_id)
-
-            client = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_SECRET))
-
-            # Signature verification
-            params_dict = {
-                'razorpay_order_id': order_id,
-                'razorpay_payment_id': payment_id,
-                'razorpay_signature': signature
-            }
-            client.utility.verify_payment_signature(params_dict)
-
-
-            # Payment was successful, now save the order
-            order.is_paid = True
-            order.razorpay_payment_id = payment_id
-            order.razorpay_signature = signature
-
-            # Create order items now that payment is confirmed
+            # Add items to the order
             products = Product.objects.filter(available=True)
             for product in products:
                 quantity = Decimal(request.POST.get(f'quantity_{product.id}', 0))
                 if quantity > 0:
-                    OrderItem.objects.create(
-                        order=order,
-                        product_id=product.id,
-                        quantity=quantity,
-                    )
+                    OrderItem.objects.create(order=order, product=product, quantity=quantity)
 
-            order.save()
+            # Setup PhonePe payment integration
+            merchant_id = settings.PHONEPE_MERCHANT_ID
+            salt_key = settings.PHONEPE_SECRET_KEY
+            salt_index = settings.PHONEPE_SALT_INDEX
+            env = Env.PROD if settings.DEBUG else Env.PROD
 
-            # Render the order success page with the confirmed order
-            return render(request, 'customer/order_success.html', {'order': order})
+            phonepe_client = PhonePePaymentClient(
+                merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
+            )
 
-        except razorpay.errors.SignatureVerificationError as e:
-            return JsonResponse({'error': 'Signature verification failed'}, status=400)
+            unique_transaction_id = f"order_{order.order_id}"
+            ui_redirect_url = request.build_absolute_uri(f'/order/success/{order.order_id}/')
+            s2s_callback_url = request.build_absolute_uri('/payment/callback/')
+            amount_in_paise = int(grand_total * 100)
+
+            pay_page_request = PgPayRequest.pay_page_pay_request_builder(
+                merchant_transaction_id=unique_transaction_id,
+                amount=amount_in_paise,
+                merchant_user_id=merchant_id,
+                callback_url=s2s_callback_url,
+                redirect_url=ui_redirect_url,
+            )
+            pay_page_response = phonepe_client.pay(pay_page_request)
+
+            # Redirect URL for payment
+            pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+            return redirect(pay_page_url)
+
         except Exception as e:
-            return JsonResponse({'error': 'An error occurred while verifying the payment'}, status=500)
+            print("Error during payment initiation:", e)
+            return JsonResponse({'error': 'An error occurred while processing your order.'}, status=500)
+
+class PaymentSuccess(View):
+    def get(self, request, order_id, *args, **kwargs):
+        try:
+            # Setup PhonePe client
+            merchant_id = settings.PHONEPE_MERCHANT_ID
+            salt_key = settings.PHONEPE_SECRET_KEY
+            salt_index = settings.PHONEPE_SALT_INDEX
+            env = Env.PROD if settings.DEBUG else Env.PROD
+
+            phonepe_client = PhonePePaymentClient(
+                merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
+            )
+
+            # Check payment status
+            merchant_transaction_id = f"order_{order_id}"
+            response = phonepe_client.check_status(merchant_transaction_id)
+            print(order_id)
+            print(response)
+            # Validate response and update order
+            if response.success is True:
+                order = Order.objects.get(order_id=order_id)
+                order.is_paid = True
+                order.payment_id = response.data.transaction_id
+                order.save()
+                return render(request, 'customer/order_success.html', {'order': order})
+            else:
+                return JsonResponse({'error': 'Payment failed or invalid status'}, status=400)
+
+        except Order.DoesNotExist:
+            return JsonResponse({'error': 'Order not found'}, status=404)
+        except Exception as e:
+            print("Error during payment success handling:", e)
+            return JsonResponse({'error': 'An error occurred while verifying the payment.'}, status=500)
 
         
-
-
-
 
 def shop_management(request):
     # Retrieve or initialize ShopClosed and GateClosed models

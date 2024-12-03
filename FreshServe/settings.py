@@ -133,14 +133,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
-RAZORPAY_API_KEY = os.environ.get('RAZORPAY_API_KEY')
-RAZORPAY_API_SECRET = os.environ.get('RAZORPAY_API_SECRET')
+PHONEPE_SECRET_KEY = os.environ.get('PHONEPE_SECRET_KEY')
+PHONEPE_MERCHANT_ID = os.environ.get('PHONEPE_MERCHANT_ID')
+PHONEPE_SALT_INDEX = 1

@@ -25,14 +25,6 @@
                 </tr>
             {% endfor %}
             <tr>
-                <td colspan="3" class="text-end">Delivery Fee</td>
-                <td>₹{{ delivery_fee }}</td>
-            </tr>
-            <tr>
-                <td colspan="3" class="text-end">Convenience Fee (2%)</td>
-                <td>₹{{ convenience_fee|floatformat:2 }}</td>
-            </tr>
-            <tr>
                 <td colspan="3" class="text-end"><strong>Total Price:</strong></td>
                 <td><strong>₹{{ grand_total|floatformat:2 }}</strong></td>
             </tr>

@@ -21,7 +21,7 @@ urlpatterns = [
     path('contact/', ContactView.as_view(), name='contact'),
     path('order/', Orders.as_view(), name='order'),
     path('order/confirm/', ConfirmOrder.as_view(), name='order_confirm'),
-    path('order/success/', PaymentSuccess.as_view(), name='order_success'),
+    path('order/success/<str:order_id>/', PaymentSuccess.as_view(), name='order_success'),
 
     path('terms-and-conditions/', terms, name='terms'),
     path('privacy-policy/', privacy, name='privacy'),

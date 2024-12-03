@@ -11,7 +11,7 @@
                         <div class="col-12 mb-4">
                             <div class="border rounded p-3 d-flex flex-row justify-content-between align-items-center h-100" style="width: 100%;">
                                 <div class="d-flex flex-column">
-                                    <img src="{{ product.image }}" class="img-fluid rounded mb-2" alt="{{ product.name }}" width="100" height="100" style="object-fit: cover; border-radius: 5rem;">
+                                    <img src="{{ product.image_url }}" class="img-fluid rounded mb-2" alt="{{ product.name }}" width="100" height="100" style="object-fit: cover; border-radius: 5rem;">
                                     <h5 class="font-weight-bold">{{ product.name }}</h5>
                                     <p>{{ product.description }}</p>
                                     <p><strong>₹{{ product.price }}</strong> per {{ product.quantity }} {{ product.unit }}</p>

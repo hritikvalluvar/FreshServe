@@ -1,24 +1,43 @@
-
-<!-- order_success.html -->
 {% extends 'customer/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="text-center mb-4">
-        <h1 class="display-4 text-success">Payment Successful!</h1>
-        <p class="lead">Thank you, {{ order.name }}!</p>
-    </div>
-    
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Payment Details</h5>
-            <p class="card-text">Your payment of <strong>₹{{ order.price|floatformat:2 }}</strong> has been received.</p>
-            <p class="card-text">Order ID: <strong>{{ order.pk }}</strong></p>
+<div class="container mt-5 mb-5">
+    <div class="card shadow-lg p-5">
+        <div class="text-center">
+            <h1 class="text-success fw-bold mb-3">Payment Successful!</h1>
+            <p class="lead mb-4">Your order <strong>#{{ order.order_id }}</strong> has been successfully paid.</p>
+            <p class="text-muted">Thank you for your purchase! Your order is now being processed.</p>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'index' %}" class="btn btn-outline-primary btn-lg">Go Home</a>
         </div>
     </div>
-
-    <div class="text-center mt-4">
-        <a href="{% url 'index' %}" class="btn btn-primary btn-lg">Go to Home</a>
-    </div>
 </div>
+
+<!-- Additional styles -->
+<style>
+    .container {
+        max-width: 800px;
+    }
+    .card {
+        border-radius: 12px;
+        background-color: #f8f9fa;
+    }
+    .text-success {
+        color: #28a745 !important;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    .btn-outline-primary {
+        border-color: #007bff;
+        color: #007bff;
+    }
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
 {% endblock %}
