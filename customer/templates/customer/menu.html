@@ -7,13 +7,13 @@
         {% for product in products %}
             <div class="col-md-4">
                 <div class="card shadow-sm">
-                    <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}" style="object-fit: cover; height: 200px;">
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="object-fit: cover; height: 200px;">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">{{ product.description }}</p>
                         <p><strong>₹{{ product.price }}</strong> per {{ product.quantity }} {{ product.unit }}</p>
-                        <a href="{% url 'order' %}" class="btn btn-primary">Order Now</a> <!-- Link to order page -->
                     </div>
+                    <a href="{% url 'order' %}" class="btn btn-primary">Order Now</a> <!-- Link to order page -->
                 </div>
             </div>
         {% endfor %}
