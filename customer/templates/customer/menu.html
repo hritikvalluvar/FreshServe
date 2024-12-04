@@ -13,10 +13,10 @@
                         <p class="card-text">{{ product.description }}</p>
                         <p><strong>₹{{ product.price }}</strong> per {{ product.quantity }} {{ product.unit }}</p>
                     </div>
-                    <a href="{% url 'order' %}" class="btn btn-primary">Order Now</a> <!-- Link to order page -->
                 </div>
             </div>
         {% endfor %}
+        <a href="{% url 'order' %}" class="btn btn-primary">Order Now</a> <!-- Link to order page -->
     </div>
 </div>
 {% endblock %}
