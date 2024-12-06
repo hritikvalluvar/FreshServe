@@ -8,18 +8,18 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Quantity</th>
                 <th>Product Name</th>
                 <th>Price per Unit (₹)</th>
+                <th>Quantity</th>
                 <th>Total (₹)</th>
             </tr>
         </thead>
         <tbody>
             {% for item in selected_products_with_quantities %}
                 <tr>
-                    <td>{{ item.quantity }} {{ item.unit }}</td>
                     <td>{{ item.product_name }}</td>
                     <td>₹{{ item.price }}</td>
+                    <td>{{ item.quantity }} {{ item.unit }}</td>
                     <td>₹{{ item.item_total }}</td>
                     <input type="hidden" name="quantity_{{ item.product_id }}" value="{{ item.quantity }}">
                 </tr>
