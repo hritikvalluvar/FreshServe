@@ -11,8 +11,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
-from django.core.mail import send_mail
-from django.contrib import messages
+from django.db.models import Sum, F
 
 
 # Local application imports
@@ -20,8 +19,6 @@ from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvai
 
 # Standard library imports
 from decimal import Decimal, ROUND_DOWN
-import traceback
-import uuid
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -369,6 +366,35 @@ def packaging_bay_view(request):
         'orders': orders,
     }
     return render(request, 'kitchen/packaging_bay_view.html', context)
+
+def packaging_summary(request):
+    selected_date = request.GET.get('order_date')
+    summary = []
+
+    if selected_date:
+        # Filter orders by the selected date
+        orders = Order.objects.filter(created_at__date=selected_date)
+
+        # Aggregate the quantities by category
+        order_items = OrderItem.objects.filter(order__in=orders).values(
+            'product__name', 'product__unit'
+        ).annotate(
+            total_quantity=Sum(F('quantity'))
+        ).order_by('product__name')
+
+        # Prepare the summary data
+        for item in order_items:
+            summary.append({
+                'category': item['product__name'],
+                'quantity': item['total_quantity'],
+                'unit': item['product__unit']
+            })
+
+    context = {
+        'selected_date': selected_date,
+        'summary': summary,
+    }
+    return render(request, 'admin/sorting_bay.html', context)
 
 
 def terms(request):

@@ -1,0 +1,68 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>Sorting Bay Summary</h1>
+
+<!-- Date filter form -->
+<form method="GET" action="{% url 'admin:sorting_bay' %}">
+    <label for="order_date">Select Order Date:</label>
+    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit">Filter</button>
+</form>
+
+{% if selected_date %}
+    <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2> <!-- Display date in Day, Date Month Year format -->
+{% endif %}
+
+<div id="summary-table">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+        <tr>
+            <th style="border: 1px solid black;"><strong>Category</strong></th>
+            <th style="border: 1px solid black;"><strong>Quantity</strong></th>
+            <th style="border: 1px solid black;"><strong>Unit</strong></th>
+        </tr>
+        {% for item in summary %}
+        <tr>
+            <td style="border: 1px solid black;">{{ item.category }}</td>
+            <td style="border: 1px solid black;">{{ item.quantity }}</td>
+            <td style="border: 1px solid black;">{{ item.unit }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No data available for the selected date.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<button onclick="printSummary()" style="margin-bottom: 20px;">Print Summary</button>
+
+<script>
+    function printSummary() {
+        var printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Packaging Bay Summary</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write('<h1>Packaging Bay Summary</h1>');
+        
+        var selectedDateTitle = "";
+        if (document.getElementById("date-title")) {
+            selectedDateTitle = document.getElementById("date-title").innerHTML;
+            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+            // Update the print window title with date and day
+            printWindow.document.title = "Sorting Bay Summary - " + selectedDateTitle;
+        }
+    
+        // Print the table
+        var tableHTML = document.getElementById("summary-table").outerHTML;
+        printWindow.document.write(tableHTML);
+        printWindow.document.write('</body></html>');
+    
+        printWindow.document.close(); // Close the document
+        printWindow.print(); // Trigger the print dialog
+    }
+</script>
+    
+{% endblock %}
