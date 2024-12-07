@@ -50,29 +50,32 @@
 <button onclick="printTable()" style="margin-bottom: 20px;">Print Orders</button>
 
 <script>
-function printTable() {
-    var printWindow = window.open('', '', 'height=600,width=800');
-    printWindow.document.write('<html><head><title>Order List</title>');
-    printWindow.document.write('<style>');
-    printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
-    printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
-    printWindow.document.write('</style></head><body>');
-    printWindow.document.write('<h1>Order List</h1>');
+    function printTable() {
+        var printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Order List</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write('<h1>Order List</h1>');
+        
+        var selectedDateTitle = "";
+        if (document.getElementById("date-title")) {
+            selectedDateTitle = document.getElementById("date-title").innerHTML;
+            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+            // Update the print window title with date and day
+            printWindow.document.title = "Order List - " + selectedDateTitle;
+        }
     
-    // Get the selected date and include it as the title in print
-    if (document.getElementById("date-title")) {
-        var selectedDateTitle = document.getElementById("date-title").innerHTML;
-        printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+        // Print the table
+        var tableHTML = document.getElementById("order-table").outerHTML;
+        printWindow.document.write(tableHTML);
+        printWindow.document.write('</body></html>');
+    
+        printWindow.document.close(); // Close the document
+        printWindow.print(); // Trigger the print dialog
     }
-
-    // Print the table
-    var tableHTML = document.getElementById("order-table").outerHTML;
-    printWindow.document.write(tableHTML);
-    printWindow.document.write('</body></html>');
-
-    printWindow.document.close(); // Close the document
-    printWindow.print(); // Trigger the print dialog
-}
 </script>
+    
     
 {% endblock %}
