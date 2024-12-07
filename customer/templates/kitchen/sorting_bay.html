@@ -15,28 +15,25 @@
 {% endif %}
 
 <!-- Sorting Bay Table -->
-<div id="sorting-bay-table" style="margin-top: 20px;">
+<div id="sorting-bay-table">
     <table style="width: 100%; text-align: left; border-collapse: collapse;">
         <thead>
             <tr>
-                <th style="border: 1px solid black; padding: 8px; background-color: #f2f2f2;"><strong>Product Category</strong></th>
-                <th style="border: 1px solid black; padding: 8px; background-color: #f2f2f2;"><strong>Subcategory (Quantity)</strong></th>
-                <th style="border: 1px solid black; padding: 8px; background-color: #f2f2f2;"><strong>Unit</strong></th>
-                <th style="border: 1px solid black; padding: 8px; background-color: #f2f2f2;"><strong>Occurrence</strong></th>
+                <th style="border: 1px solid black; padding: 8px;"><strong>Category</strong></th>
+                <th style="border: 1px solid black; padding: 8px;"><strong>Quantity</strong></th>
+                <th style="border: 1px solid black; padding: 8px;"><strong>Occurrence</strong></th>
             </tr>
         </thead>
         <tbody>
             {% for category, subcategories in category_summary.items %}
-                <tr>
-                    <td colspan="4" style="border: 1px solid black; font-weight: bold; background-color: #e0e0e0; font-size: 16px;">
-                        {{ category }}
-                    </td>
-                </tr>
                 {% for subcategory, count in subcategories.items %}
                     <tr>
-                        <td style="border: 1px solid black; padding: 8px;"></td> <!-- Empty cell for category -->
+                        {% if loop.first %}
+                            <!-- First subcategory row includes the category name -->
+                            <td style="border: 1px solid black; font-weight: bold; background-color: #f0f0f0;" rowspan="{{ subcategories|length }}">{{ category }}</td>
+                        {% endif %}
+                        <!-- Subcategory name aligned with Quantity and Occurrence columns -->
                         <td style="border: 1px solid black; padding: 8px;">{{ subcategory }}</td>
-                        <td style="border: 1px solid black; padding: 8px;">{{ subcategory.split('x')[1]|default:'' }}</td> <!-- Extracts unit if present -->
                         <td style="border: 1px solid black; padding: 8px;">{{ count }}</td>
                     </tr>
                 {% endfor %}
@@ -58,9 +55,6 @@
         printWindow.document.write('<style>');
         printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
         printWindow.document.write('th, td { border: 1px solid black; text-align: left; padding: 8px; }');
-        printWindow.document.write('th { background-color: #f2f2f2; }');
-        printWindow.document.write('td { background-color: #ffffff; }');
-        printWindow.document.write('tr:nth-child(even) { background-color: #f9f9f9; }');
         printWindow.document.write('</style></head><body>');
         printWindow.document.write('<h1>Sorting Bay</h1>');
 
@@ -68,6 +62,7 @@
         if (document.getElementById("date-title")) {
             selectedDateTitle = document.getElementById("date-title").innerHTML;
             printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+            // Update the print window title with date and day
             printWindow.document.title = "Sorting Bay - " + selectedDateTitle;
         }
 
