@@ -303,7 +303,7 @@ def kitchen_view(request):
         'Ragi Idli': {'quantity': 0, 'batter': 0, 'unit': 'pieces'},
         'Idli/Dosa Batter': {'quantity': 0, 'batter': 0, 'unit': 'kg'},
         'Ragi Batter': {'quantity': 0, 'batter': 0, 'unit': 'kg'},
-        'Sambhar': {'quantity': 0, 'unit': 'pack'},
+        'Sambar': {'quantity': 0, 'unit': 'pack'},
         'Onion Chutney': {'quantity': 0, 'unit': 'pack'},
         'Peanut Chutney': {'quantity': 0, 'unit': 'pack'},
         'Sambar Powder': {'quantity': 0, 'unit': 'gm'},
