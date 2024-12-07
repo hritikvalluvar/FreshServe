@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
 from django.utils.html import format_html
-from .views import shop_management, order_list, packaging_bay_view, kitchen_view
+from .views import shop_management, order_list, packaging_bay_view, kitchen_view, sorting_bay
 from django.contrib.admin import AdminSite
 
 # Custom Admin Site
@@ -17,6 +17,7 @@ class CustomAdminSite(AdminSite):
             path('order_list/', self.admin_view(order_list), name="order_list"),
             path('packaging_bay/', self.admin_view(packaging_bay_view), name="packaging_bay"),
             path('kitchen_view/', self.admin_view(kitchen_view), name="kitchen_view"),
+            path('sorting_bay/', self.admin_view(sorting_bay), name="sorting_bay"),
         ]
         admin_urls = super().get_urls()
         return  custom_urls + admin_urls 

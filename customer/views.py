@@ -367,13 +367,14 @@ def packaging_bay_view(request):
     }
     return render(request, 'kitchen/packaging_bay_view.html', context)
 
-def packaging_summary(request):
+def sorting_bay(request):
     selected_date = request.GET.get('order_date')
     summary = []
 
     if selected_date:
         # Filter orders by the selected date
         orders = Order.objects.filter(created_at__date=selected_date)
+        orders = orders.filter(is_paid=True)
 
         # Aggregate the quantities by category
         order_items = OrderItem.objects.filter(order__in=orders).values(
