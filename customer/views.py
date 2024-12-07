@@ -376,9 +376,9 @@ def sorting_bay(request):
     
     # Filter orders by the selected date if specified
     if selected_date:
-        orders = Order.objects.filter(order_date=selected_date)
+        orders = Order.objects.filter(order_date=selected_date, is_paid=True)
     else:
-        orders = Order.objects.all()
+        orders = Order.objects.all(order_date=timezone.now().date(), is_paid=True)
 
     # Initialize the dictionary to store category summaries
     category_summary = {}
