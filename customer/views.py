@@ -368,28 +368,32 @@ def packaging_bay_view(request):
     return render(request, 'kitchen/packaging_bay_view.html', context)
 
 def sorting_bay(request):
-    selected_date = request.GET.get('order_date')
+    selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
+    orders = Order.objects.all().order_by('-created_at')  # Retrieve all orders
+
+    # Filter orders by selected date if provided
+    if selected_date:
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()  # Convert to date object
+    else:
+        selected_date = timezone.now().date()  # No date selected
+
+    orders = orders.filter(order_date=selected_date, is_paid=True)  # Filter by order_date
     summary = []
 
-    if selected_date:
-        # Filter orders by the selected date
-        orders = Order.objects.filter(created_at__date=selected_date)
-        orders = orders.filter(is_paid=True)
+    # Aggregate the quantities by category
+    order_items = OrderItem.objects.filter(order__in=orders).values(
+        'product__name', 'product__unit'
+    ).annotate(
+        total_quantity=Sum(F('quantity'))
+    ).order_by('product__name')
 
-        # Aggregate the quantities by category
-        order_items = OrderItem.objects.filter(order__in=orders).values(
-            'product__name', 'product__unit'
-        ).annotate(
-            total_quantity=Sum(F('quantity'))
-        ).order_by('product__name')
-
-        # Prepare the summary data
-        for item in order_items:
-            summary.append({
-                'category': item['product__name'],
-                'quantity': item['total_quantity'],
-                'unit': item['product__unit']
-            })
+    # Prepare the summary data
+    for item in order_items:
+        summary.append({
+            'category': item['product__name'],
+            'quantity': item['total_quantity'],
+            'unit': item['product__unit']
+        })
 
     context = {
         'selected_date': selected_date,
