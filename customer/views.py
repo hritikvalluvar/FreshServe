@@ -375,25 +375,41 @@ def sorting_bay(request):
     if selected_date:
         selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()  # Convert to date object
     else:
-        selected_date = timezone.now().date()  # No date selected
+        selected_date = timezone.now().date()  # Default to today if no date is selected
 
-    orders = orders.filter(order_date=selected_date, is_paid=True)  # Filter by order_date
+    orders = orders.filter(order_date=selected_date, is_paid=True)  # Filter by order_date and payment status
     summary = []
 
-    # Aggregate the quantities by category
+    # Fetch all order items grouped by product and size
     order_items = OrderItem.objects.filter(order__in=orders).values(
-        'product__name', 'product__unit'
+        'product__name', 'product__unit', 'product__size'
     ).annotate(
-        total_quantity=Sum(F('quantity'))
-    ).order_by('product__name')
+        total_quantity=Sum('quantity')
+    ).order_by('product__name', 'product__size')
 
-    # Prepare the summary data
+    # Prepare the summary data with subcategories
+    category_map = {}
     for item in order_items:
-        summary.append({
-            'category': item['product__name'],
+        category_name = item['product__name']
+        if category_name not in category_map:
+            category_map[category_name] = {
+                'category': category_name,
+                'quantity': 0,  # Total quantity will be a sum of all subcategories
+                'unit': item['product__unit'],
+                'subcategories': []  # List of size-wise breakdowns
+            }
+        
+        # Add subcategory details
+        category_map[category_name]['subcategories'].append({
+            'size': item['product__size'],
             'quantity': item['total_quantity'],
             'unit': item['product__unit']
         })
+        # Update total quantity for the category
+        category_map[category_name]['quantity'] += item['total_quantity']
+
+    # Convert the category map to a list for rendering
+    summary = list(category_map.values())
 
     context = {
         'selected_date': selected_date,
