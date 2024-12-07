@@ -399,7 +399,7 @@ def sorting_bay(request):
         'selected_date': selected_date,
         'summary': summary,
     }
-    return render(request, 'admin/sorting_bay.html', context)
+    return render(request, 'kitchen/sorting_bay.html', context)
 
 
 def terms(request):
