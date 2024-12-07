@@ -48,7 +48,7 @@ class OrderItemInline(admin.TabularInline):
     extra = 0
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_id', 'name', 'address', 'area', 'order_items_summary', 'price')
+    list_display = ('order_id', 'name', 'is_paid', 'address', 'area', 'order_items_summary', 'price')
     list_filter = ('area', 'is_paid')
     search_fields = ('name', 'address')
     ordering = ['-created_at']
