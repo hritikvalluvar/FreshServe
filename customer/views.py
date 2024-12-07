@@ -387,7 +387,7 @@ def sorting_bay(request):
     for order in orders:
         for order_item in order.items.all():
             # Extract product category and quantity (unit)
-            category_name = order_item.product.category
+            category_name = order_item.product.name
             quantity = order_item.quantity
             unit = order_item.product.unit
             
