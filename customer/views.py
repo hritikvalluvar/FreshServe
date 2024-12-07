@@ -368,51 +368,50 @@ def packaging_bay_view(request):
     return render(request, 'kitchen/packaging_bay_view.html', context)
 
 from django.shortcuts import render
-from django.db.models import Sum
-from .models import Order, OrderItem, Product
-from datetime import datetime
+from .models import Order, OrderItem
 
 def sorting_bay(request):
-    selected_date = request.GET.get('order_date')  # Get selected date from the GET request
+    # Filter orders based on selected date (if provided)
+    selected_date = request.GET.get('order_date')
+    
+    # Filter orders by the selected date if specified
     if selected_date:
-        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+        orders = Order.objects.filter(order_date=selected_date)
     else:
-        selected_date = datetime.today().date()  # Default to today's date
+        orders = Order.objects.all()
 
-    # Filter orders by the selected date
-    orders = Order.objects.filter(order_date=selected_date)
+    # Initialize the dictionary to store category summaries
+    category_summary = {}
 
-    # Summarize the order items by category
-    categories = Product.objects.all().values('category').distinct()  # Fetch all distinct categories of products
-    summary = []
+    # Iterate over all orders and order items
+    for order in orders:
+        for order_item in order.items.all():
+            # Extract product category and quantity (unit)
+            category_name = order_item.product.category
+            quantity = order_item.quantity
+            unit = order_item.product.unit
+            
+            # Initialize the category in category_summary if not present
+            if category_name not in category_summary:
+                category_summary[category_name] = {}
 
-    for category in categories:
-        category_name = category['category']
-        category_items = OrderItem.objects.filter(
-            order__order_date=selected_date,
-            product__category=category_name
-        ).values('product__name', 'product__unit').annotate(
-            total_quantity=Sum('quantity')
-        ).order_by('product__name')
+            # Create subcategory based on quantity and unit
+            subcategory_key = f"{quantity} × {unit}"
 
-        if category_items:
-            category_summary = {
-                'category': category_name,
-                'subcategories': []
-            }
-            for item in category_items:
-                category_summary['subcategories'].append({
-                    'product_name': item['product__name'],
-                    'quantity': item['total_quantity'],
-                    'unit': item['product__unit'],
-                    'size': item['product__size'] if 'product__size' in item else None
-                })
-            summary.append(category_summary)
+            # Increment the count for the subcategory
+            if subcategory_key in category_summary[category_name]:
+                category_summary[category_name][subcategory_key] += 1
+            else:
+                category_summary[category_name][subcategory_key] = 1
 
-    return render(request, 'admin/sorting_bay.html', {
+    # Prepare the context to pass to the template
+    context = {
+        'category_summary': category_summary,
         'selected_date': selected_date,
-        'summary': summary,
-    })
+    }
+
+    return render(request, 'kitchen/sorting_bay.html', context)
+
 
 
 

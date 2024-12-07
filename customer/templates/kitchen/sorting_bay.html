@@ -25,23 +25,21 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in summary %}
+            {% for category, subcategories in category_summary.items %}
                 <tr>
-                    <td style="border: 1px solid black; padding: 8px; font-weight: bold;">{{ item.category }}</td>
-                    <td style="border: 1px solid black; padding: 8px;"></td>
-                    <td style="border: 1px solid black; padding: 8px;"></td>
+                    <td colspan="3" style="border: 1px solid black; font-weight: bold;">{{ category }}</td>
                 </tr>
-                {% for subitem in item.subcategories %}
-                <tr>
-                    <td style="border: 1px solid black; padding: 8px;"></td>
-                    <td style="border: 1px solid black; padding: 8px;">{{ subitem.quantity }} × {{ subitem.size }}</td>
-                    <td style="border: 1px solid black; padding: 8px;">{{ subitem.unit }}</td>
-                </tr>
+                {% for subcategory, count in subcategories.items %}
+                    <tr>
+                        <td style="border: 1px solid black; padding: 8px;"></td>
+                        <td style="border: 1px solid black; padding: 8px;">{{ subcategory }}</td>
+                        <td style="border: 1px solid black; padding: 8px;">{{ count }}</td>
+                    </tr>
                 {% endfor %}
             {% empty %}
-            <tr>
-                <td colspan="3" style="border: 1px solid black; text-align: center;">No data available for the selected date.</td>
-            </tr>
+                <tr>
+                    <td colspan="3" style="border: 1px solid black; text-align: center;">No data available for the selected date.</td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
