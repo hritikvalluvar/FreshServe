@@ -34,7 +34,7 @@
                 {% for subitem in item.subcategories %}
                 <tr>
                     <td style="border: 1px solid black; padding: 8px;"></td>
-                    <td style="border: 1px solid black; padding: 8px;">{{ subitem.quantity }} × {{ subitem.size }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ subitem.quantity }}</td>
                     <td style="border: 1px solid black; padding: 8px;">{{ subitem.unit }}</td>
                 </tr>
                 {% endfor %}
@@ -62,19 +62,4 @@
         var selectedDateTitle = "";
         if (document.getElementById("date-title")) {
             selectedDateTitle = document.getElementById("date-title").innerHTML;
-            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
-            // Update the print window title with date and day
-            printWindow.document.title = "Sorting Bay - " + selectedDateTitle;
-        }
-
-        // Print the table
-        var tableHTML = document.getElementById("sorting-bay-table").outerHTML;
-        printWindow.document.write(tableHTML);
-        printWindow.document.write('</body></html>');
-
-        printWindow.document.close(); // Close the document
-        printWindow.print(); // Trigger the print dialog
-    }
-</script>
-
-{% endblock %}
+            printWindow.document.write('<h2>' + selectedDateTitle
