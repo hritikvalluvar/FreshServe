@@ -1,7 +1,7 @@
 {% extends 'admin/base_site.html' %}
 
 {% block content %}
-<h1>Sorting Bay Summary</h1>
+<h1>Sorting Bay</h1>
 
 <!-- Date filter form -->
 <form method="GET" action="{% url 'admin:sorting_bay' %}">
@@ -14,55 +14,67 @@
     <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2> <!-- Display date in Day, Date Month Year format -->
 {% endif %}
 
-<div id="summary-table">
-    <table style="width: 100%; text-align: center; border-collapse: collapse;">
-        <tr>
-            <th style="border: 1px solid black;"><strong>Category</strong></th>
-            <th style="border: 1px solid black;"><strong>Quantity</strong></th>
-            <th style="border: 1px solid black;"><strong>Unit</strong></th>
-        </tr>
-        {% for item in summary %}
-        <tr>
-            <td style="border: 1px solid black;">{{ item.category }}</td>
-            <td style="border: 1px solid black;">{{ item.quantity }}</td>
-            <td style="border: 1px solid black;">{{ item.unit }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">No data available for the selected date.</td>
-        </tr>
-        {% endfor %}
+<!-- Sorting Bay Table -->
+<div id="sorting-bay-table">
+    <table style="width: 100%; text-align: left; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid black; padding: 8px;"><strong>Category</strong></th>
+                <th style="border: 1px solid black; padding: 8px;"><strong>Quantity</strong></th>
+                <th style="border: 1px solid black; padding: 8px;"><strong>Unit</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in summary %}
+                <tr>
+                    <td style="border: 1px solid black; padding: 8px; font-weight: bold;">{{ item.category }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ item.quantity }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ item.unit }}</td>
+                </tr>
+                {% for subitem in item.subcategories %}
+                <tr>
+                    <td style="border: 1px solid black; padding: 8px;"></td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ subitem.quantity }} × {{ subitem.size }}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{{ subitem.unit }}</td>
+                </tr>
+                {% endfor %}
+            {% empty %}
+            <tr>
+                <td colspan="3" style="border: 1px solid black; text-align: center;">No data available for the selected date.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 
-<button onclick="printSummary()" style="margin-bottom: 20px;">Print Summary</button>
+<button onclick="printTable()" style="margin-top: 20px;">Print Sorting Bay</button>
 
 <script>
-    function printSummary() {
+    function printTable() {
         var printWindow = window.open('', '', 'height=600,width=800');
-        printWindow.document.write('<html><head><title>Packaging Bay Summary</title>');
+        printWindow.document.write('<html><head><title>Sorting Bay Summary</title>');
         printWindow.document.write('<style>');
         printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
-        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
+        printWindow.document.write('th, td { border: 1px solid black; text-align: left; padding: 8px; }');
         printWindow.document.write('</style></head><body>');
-        printWindow.document.write('<h1>Packaging Bay Summary</h1>');
-        
+        printWindow.document.write('<h1>Sorting Bay</h1>');
+
         var selectedDateTitle = "";
         if (document.getElementById("date-title")) {
             selectedDateTitle = document.getElementById("date-title").innerHTML;
             printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
             // Update the print window title with date and day
-            printWindow.document.title = "Sorting Bay Summary - " + selectedDateTitle;
+            printWindow.document.title = "Sorting Bay - " + selectedDateTitle;
         }
-    
+
         // Print the table
-        var tableHTML = document.getElementById("summary-table").outerHTML;
+        var tableHTML = document.getElementById("sorting-bay-table").outerHTML;
         printWindow.document.write(tableHTML);
         printWindow.document.write('</body></html>');
-    
+
         printWindow.document.close(); // Close the document
         printWindow.print(); // Trigger the print dialog
     }
 </script>
-    
+
 {% endblock %}
