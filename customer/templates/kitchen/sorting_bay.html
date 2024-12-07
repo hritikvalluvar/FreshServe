@@ -20,28 +20,27 @@
         <thead>
             <tr>
                 <th style="border: 1px solid black; padding: 8px;"><strong>Category</strong></th>
-                <th style="border: 1px solid black; padding: 8px;"><strong>Subcategory</strong></th>
                 <th style="border: 1px solid black; padding: 8px;"><strong>Quantity</strong></th>
                 <th style="border: 1px solid black; padding: 8px;"><strong>Occurrence</strong></th>
             </tr>
         </thead>
         <tbody>
             {% for category, subcategories in category_summary.items %}
+                <!-- Product Category Row -->
+                <tr>
+                    <td colspan="3" style="border: 1px solid black; font-weight: bold; background-color: #f0f0f0;">{{ category }}</td>
+                </tr>
                 {% for subcategory, count in subcategories.items %}
+                    <!-- Subcategory Row -->
                     <tr>
-                        {% if loop.first %}
-                            <!-- First subcategory row includes the category name -->
-                            <td style="border: 1px solid black; font-weight: bold; background-color: #f0f0f0;" rowspan="{{ subcategories|length }}">{{ category }}</td>
-                        {% endif %}
-                        <!-- Subcategory name aligned with Quantity and Occurrence columns -->
+                        <td style="border: 1px solid black; padding: 8px;"></td>
                         <td style="border: 1px solid black; padding: 8px;">{{ subcategory }}</td>
-                        <td style="border: 1px solid black; padding: 8px;">{{ subcategory.split(' × ')[0] }}</td> <!-- Display quantity -->
-                        <td style="border: 1px solid black; padding: 8px;">{{ count }}</td> <!-- Display occurrence count -->
+                        <td style="border: 1px solid black; padding: 8px;">{{ count }}</td>
                     </tr>
                 {% endfor %}
             {% empty %}
                 <tr>
-                    <td colspan="4" style="border: 1px solid black; text-align: center;">No data available for the selected date.</td>
+                    <td colspan="3" style="border: 1px solid black; text-align: center;">No data available for the selected date.</td>
                 </tr>
             {% endfor %}
         </tbody>
