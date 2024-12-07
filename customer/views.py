@@ -370,48 +370,50 @@ def packaging_bay_view(request):
 from django.shortcuts import render
 from django.db.models import Sum
 from .models import Order, OrderItem, Product
-from collections import defaultdict
-from datetime import date
+from datetime import datetime
 
 def sorting_bay(request):
-    # Get the selected date from the GET request, or default to today's date
-    selected_date = request.GET.get('order_date', date.today().strftime('%Y-%m-%d'))
-    
-    # Convert the selected date to a datetime object
-    selected_date = date.fromisoformat(selected_date)
+    selected_date = request.GET.get('order_date')  # Get selected date from the GET request
+    if selected_date:
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+    else:
+        selected_date = datetime.today().date()  # Default to today's date
 
     # Filter orders by the selected date
     orders = Order.objects.filter(order_date=selected_date)
 
-    # Initialize a defaultdict to organize order items by category
-    order_summary = defaultdict(lambda: {'quantity': 0, 'unit': '', 'subcategories': []})
+    # Summarize the order items by category
+    categories = Product.objects.all().values('category').distinct()  # Fetch all distinct categories of products
+    summary = []
 
-    # Iterate over orders and items to build the summary
-    for order in orders:
-        for item in order.items.all():
-            product = item.product
-            category = product.category.name  # Assuming Product has a 'category' field
-            
-            # Add quantity and unit to the summary
-            order_summary[category]['quantity'] += item.quantity
-            order_summary[category]['unit'] = product.unit
-            
-            # Group by subcategories for specific products (like batter sizes)
-            if product.name in ['Idli/Dosa Batter', 'Ragi Batter']:  # Example categories
-                order_summary[category]['subcategories'].append({
-                    'quantity': item.quantity,
-                    'size': f"{item.quantity} kg" if product.unit == 'kg' else f"{item.quantity} pcs",
-                    'unit': product.unit
+    for category in categories:
+        category_name = category['category']
+        category_items = OrderItem.objects.filter(
+            order__order_date=selected_date,
+            product__category=category_name
+        ).values('product__name', 'product__unit').annotate(
+            total_quantity=Sum('quantity')
+        ).order_by('product__name')
+
+        if category_items:
+            category_summary = {
+                'category': category_name,
+                'subcategories': []
+            }
+            for item in category_items:
+                category_summary['subcategories'].append({
+                    'product_name': item['product__name'],
+                    'quantity': item['total_quantity'],
+                    'unit': item['product__unit'],
+                    'size': item['product__size'] if 'product__size' in item else None
                 })
+            summary.append(category_summary)
 
-    # Convert order summary to a list of items for easier rendering
-    summary = [{'category': category, **data} for category, data in order_summary.items()]
-
-    # Render the sorting bay page with the summary and selected date
-    return render(request, 'kitchen/sorting_bay.html', {
+    return render(request, 'admin/sorting_bay.html', {
+        'selected_date': selected_date,
         'summary': summary,
-        'selected_date': selected_date
     })
+
 
 
 
