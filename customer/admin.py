@@ -65,7 +65,7 @@ def refresh_payment_status(modeladmin, request, queryset):
                 order.is_paid = True
                 order.transaction_id = response.json().get('transaction_id')
                 order.save()
-            elif response.date.state == 'FAILED':
+            elif response.data.state == 'FAILED':
                 # Delete order items and the order itself
                 order_items = OrderItem.objects.filter(order=order)
                 order_items.delete()
