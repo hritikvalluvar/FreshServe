@@ -184,7 +184,7 @@ class PaymentSuccess(View):
             merchant_id = settings.PHONEPE_MERCHANT_ID
             salt_key = settings.PHONEPE_SECRET_KEY
             salt_index = settings.PHONEPE_SALT_INDEX
-            env = Env.PROD if settings.DEBUG else Env.PROD
+            env = Env.PROD
 
             phonepe_client = PhonePePaymentClient(
                 merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
@@ -199,7 +199,7 @@ class PaymentSuccess(View):
             if response.success is True:
                 order = Order.objects.get(order_id=order_id)
                 order.is_paid = True
-                order.payment_id = response.data.transaction_id
+                order.transaction_id = response.data.transaction_id
                 order.save()
                 return render(request, 'customer/order_success.html', {'order': order})
             else:
