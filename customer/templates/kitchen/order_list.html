@@ -33,7 +33,7 @@
 </div>
 
 <div id="order-table" style="overflow-x: auto; margin: 0 auto; width: 90%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 8px;">
-    <table style="width: 100%; text-align: center; border-collapse: collapse; font-family: Arial, sans-serif;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 0.9em;">
         <thead>
             <tr style="background-color: #f2f2f2; border-bottom: 2px solid #ddd;">
                 <th style="padding: 10px; border: 1px solid #ddd;"><strong>Order ID</strong></th>
@@ -52,7 +52,7 @@
                 <td style="padding: 10px; border: 1px solid #ddd;">{{ order.address }}</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">{{ order.get_area_display }}</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">{{ order.order_items_summary }}</td>
-                <td style="padding: 10px; border: 1px solid #ddd; color: #4CAF50; font-weight: bold;">₹{{ order.price }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; color: black; font-weight: bold;">₹{{ order.price }}</td>
             </tr>
             {% empty %}
             <tr>
@@ -64,7 +64,7 @@
                 <td colspan="5" style="padding: 10px; text-align: right; font-weight: bold; border: 1px solid #ddd;">
                     Total:
                 </td>
-                <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: #4CAF50;">₹{{ sum }}</td>
+                <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; color: black;">₹{{ sum }}</td>
             </tr>
             {% endif %}
         </tbody>
@@ -84,10 +84,11 @@
         printWindow.document.write('@media print {');
         printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
         printWindow.document.write('h1, h2 { text-align: center; }');
-        printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
-        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 10px; }');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; font-size: 0.8em; }');
+        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
         printWindow.document.write('th { background-color: #f2f2f2; }');
         printWindow.document.write('button, #order_date, label { display: none; }');
+        printWindow.document.write('td { color: black; }'); /* Ensure visibility of text */
         printWindow.document.write('}');
         printWindow.document.write('</style></head><body>');
         printWindow.document.write('<h1>Order List</h1>');
