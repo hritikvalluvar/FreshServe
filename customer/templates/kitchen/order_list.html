@@ -14,7 +14,7 @@
     <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2> <!-- Display date in Day, Date Month Year format -->
 {% endif %}
 
-
+<button onclick="printTable()" style="margin-bottom: 20px;">Print Orders</button>
 
 <div id="order-table">
     <table style="width: 100%; text-align: center; border-collapse: collapse;">
@@ -46,8 +46,6 @@
         </tr>
     </table>
 </div>
-
-<button onclick="printTable()" style="margin-bottom: 20px;">Print Orders</button>
 
 <script>
     function printTable() {
