@@ -81,10 +81,14 @@
         var printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>Order List</title>');
         printWindow.document.write('<style>');
+        printWindow.document.write('@media print {');
         printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+        printWindow.document.write('h1, h2 { text-align: center; }');
         printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
         printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 10px; }');
         printWindow.document.write('th { background-color: #f2f2f2; }');
+        printWindow.document.write('button, #order_date, label { display: none; }');
+        printWindow.document.write('}');
         printWindow.document.write('</style></head><body>');
         printWindow.document.write('<h1>Order List</h1>');
         
