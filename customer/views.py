@@ -358,9 +358,16 @@ def kitchen_view(request):
 
 
 def packaging_bay_view(request):
-    # Retrieve all orders
-    orders = Order.objects.all().order_by('-created_at')
-    orders = orders.filter(is_paid=True)
+    selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
+    orders = Order.objects.all().order_by('-created_at')  # Retrieve all orders
+
+    # Filter orders by selected date if provided
+    if selected_date:
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()  # Convert to date object
+    else:
+        selected_date = timezone.now().date()  # No date selected
+
+    orders = orders.filter(order_date=selected_date, is_paid=True)  # Filter by order_date
     
     context = {
         'orders': orders,
