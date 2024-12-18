@@ -378,47 +378,39 @@ def packaging_bay_view(request):
 from django.shortcuts import render
 from .models import Order, OrderItem
 
+from django.shortcuts import render
+from django.utils.timezone import now
+from .models import Order
+
 def sorting_bay(request):
-    # Filter orders based on selected date (if provided)
-    selected_date = request.GET.get('order_date')
-    
-    # Filter orders by the selected date if specified
+    # Get the selected date from GET parameters
+    selected_date = request.GET.get('order_date', None)
+
+    # Filter orders by date and payment status
     if selected_date:
         orders = Order.objects.filter(order_date=selected_date, is_paid=True)
     else:
-        orders = Order.objects.all(order_date=timezone.now().date(), is_paid=True)
+        orders = Order.objects.filter(order_date=now().date(), is_paid=True)
 
-    # Initialize the dictionary to store category summaries
+    # Generate the category summary
     category_summary = {}
-
-    # Iterate over all orders and order items
     for order in orders:
-        for order_item in order.items.all():
-            # Extract product category and quantity (unit)
-            category_name = order_item.product.name
-            quantity = order_item.quantity
-            unit = order_item.product.unit
-            
-            # Initialize the category in category_summary if not present
-            if category_name not in category_summary:
-                category_summary[category_name] = {}
+        for item in order.items.all():
+            category = item.product.name
+            quantity = item.quantity
+            unit = item.product.unit
+            subcategory = f"{quantity} × {unit}"
 
-            # Create subcategory based on quantity and unit
-            subcategory_key = f"{quantity} × {unit}"
+            if category not in category_summary:
+                category_summary[category] = {}
+            category_summary[category][subcategory] = category_summary[category].get(subcategory, 0) + 1
 
-            # Increment the count for the subcategory
-            if subcategory_key in category_summary[category_name]:
-                category_summary[category_name][subcategory_key] += 1
-            else:
-                category_summary[category_name][subcategory_key] = 1
-
-    # Prepare the context to pass to the template
     context = {
         'category_summary': category_summary,
         'selected_date': selected_date,
     }
-
     return render(request, 'kitchen/sorting_bay.html', context)
+
 
 
 
