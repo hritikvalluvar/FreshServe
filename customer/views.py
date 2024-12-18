@@ -323,7 +323,7 @@ def kitchen_view(request):
     rice_needed_for_ragi_batter = round(total_ragi_batter / Decimal('2.8'), 2) if total_ragi_batter > 0 else '-'
 
     # Replace any zero quantities and batter values with '-'
-    for category, data in category_totals.items():
+    for _, data in category_totals.items():
         if data['quantity'] == 0:
             data['quantity'] = '-'
         if 'batter' in data and data['batter'] == 0:
@@ -335,7 +335,7 @@ def kitchen_view(request):
         'total_ragi_batter': total_ragi_batter if total_ragi_batter > 0 else '-',
         'rice_needed_for_idli_batter': rice_needed_for_idli_batter,
         'rice_needed_for_ragi_batter': rice_needed_for_ragi_batter,
-        'selected_date': order_date,  # Add the selected date to context
+        'selected_date': selected_date,  # Add the selected date to context
     }
     return render(request, 'kitchen/kitchen_view.html', context)
 
