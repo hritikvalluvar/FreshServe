@@ -21,12 +21,12 @@
 
     <!-- Display message based on the shop and gate status -->
     <div style="text-align: center; margin-bottom: 20px;">
-        {% if shop_open %}
-            <h2 style="color: green;">The shop is open for business.</h2>
-        {% elif gate_open %}
+        {% if shop_open and gate_open %}
+            <h2 style="color: green;">The shop is open.</h2>
+        {% elif shop_open and not gate_open %}
             <h2 style="color: orange;">Gate is open for accepting orders. The shop is currently closed.</h2>
         {% else %}
-            <h2 style="color: red;">The shop is closed, and the gate is not accepting orders.</h2>
+            <h2 style="color: red;">The shop is closed.</h2>
         {% endif %}
     </div>
 
