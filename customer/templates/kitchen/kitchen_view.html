@@ -1,81 +1,125 @@
-{% extends 'admin/base.html' %}
+{% extends 'admin/base_site.html' %}
 
 {% block content %}
-<h1>Kitchen View</h1>
+<h1 style="text-align: center; font-size: 2em; margin-bottom: 10px;">Kitchen View</h1>
 
 <!-- Date filter form -->
-<form method="GET" action="{% url 'admin:kitchen_view' %}">
-    <label for="order_date">Select Order Date:</label>
-    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
-    <button type="submit">Filter</button>
-</form>
+<div style="display: flex; justify-content: center; margin-bottom: 15px;">
+    <form method="GET" action="{% url 'admin:kitchen_view' %}" id="date-filter-form">
+        <label for="order_date" style="font-size: 1em; margin-right: 8px;">Select Order Date:</label>
+        <input 
+            type="date" 
+            id="order_date" 
+            name="order_date" 
+            value="{{ selected_date|date:'Y-m-d' }}" 
+            onchange="submitDateFilter()" 
+            style="padding: 4px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 4px;"
+        >
+    </form>
+</div>
 
 {% if selected_date %}
-    <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2> <!-- Display date in Day, Date Month Year format -->
+    <h2 id="date-title" style="text-align: center; font-size: 1.5em; margin-bottom: 20px; color: #4CAF50;">
+        {{ selected_date|date:"l, d F Y" }}
+    </h2>
 {% endif %}
 
-<!-- Print Button -->
-<button onclick="printTable()" style="margin-bottom: 20px;">Print</button>
+<div style="text-align: center; margin-bottom: 15px;">
+    <button 
+        onclick="printTable()" 
+        style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 0.9em; cursor: pointer;">
+        Print View
+    </button>
+</div>
 
-
-<table id="order-table" style="width: 100%; text-align: center; border-collapse: collapse;">
-    <tr>
-        <th style="border: 1px solid black;">Category</th>
-        <th style="border: 1px solid black;">Quantity Ordered</th>
-        <th style="border: 1px solid black;">Total Batter Required (Kg)</th>
-    </tr>
-    {% for category, data in category_totals.items %}
-    <tr>
-        <td style="border: 1px solid black;">{{ category }}</td>
-        <td style="border: 1px solid black;">
-            {{ data.quantity }}
-            {% if data.quantity != '-' %} {{ data.unit }}{% endif %}
-        </td>
-        <td style="border: 1px solid black;">
-            {{ data.batter|default:"-" }}
-        </td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Total Idli Batter</strong></td>
-        <td style="border: 1px solid black;"><strong>{{ total_idli_batter }}</strong> kg</td>
-    </tr>
-    <tr>
-        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Total Ragi Batter</strong></td>
-        <td style="border: 1px solid black;"><strong>{{ total_ragi_batter }}</strong> kg</td>
-    </tr>
-    <tr>
-        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Rice Needed for Idli Batter</strong></td>
-        <td style="border: 1px solid black;"><strong>{{ rice_needed_for_idli_batter }}</strong> kg</td>
-    </tr>
-    <tr>
-        <td colspan="2" style="border: 1px solid black; text-align: right;"><strong>Rice Needed for Ragi Batter</strong></td>
-        <td style="border: 1px solid black;"><strong>{{ rice_needed_for_ragi_batter }}</strong> kg</td>
-    </tr>
-</table>
-
+<div id="order-table" style="overflow-x: auto; margin: 0 auto; width: 95%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 8px;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 0.85em;">
+        <thead>
+            <tr style="background-color: #f2f2f2; border-bottom: 2px solid #ddd;">
+                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Category</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Quantity Ordered</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Total Batter Required (Kg)</strong></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category, data in category_totals.items %}
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ category }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">
+                    {{ data.quantity }}{% if data.unit != '-' %} {{ data.unit }}{% endif %}
+                </td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ data.batter|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+            {% if category_totals %}
+            <tr style="background-color: #f9f9f9;">
+                <td colspan="2" style="padding: 8px; text-align: right; font-weight: bold; border: 1px solid #ddd;">
+                    Total Idli Batter
+                </td>
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: black;">{{ total_idli_batter }} kg</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td colspan="2" style="padding: 8px; text-align: right; font-weight: bold; border: 1px solid #ddd;">
+                    Total Ragi Batter
+                </td>
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: black;">{{ total_ragi_batter }} kg</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td colspan="2" style="padding: 8px; text-align: right; font-weight: bold; border: 1px solid #ddd;">
+                    Rice Needed for Idli Batter
+                </td>
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: black;">{{ rice_needed_for_idli_batter }} kg</td>
+            </tr>
+            <tr style="background-color: #f9f9f9;">
+                <td colspan="2" style="padding: 8px; text-align: right; font-weight: bold; border: 1px solid #ddd;">
+                    Rice Needed for Ragi Batter
+                </td>
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: black;">{{ rice_needed_for_ragi_batter }} kg</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" style="padding: 15px; text-align: center; font-size: 1em; color: #777;">No data available for the selected date.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
 
 <script>
-function printTable() {
-    var printWindow = window.open('', '', 'height=600,width=800');
-    printWindow.document.write('<html><head><title>Kitchen View</title>');
-    printWindow.document.write('<style>');
-    printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
-    printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 8px; }');
-    printWindow.document.write('</style></head><body>');
-    printWindow.document.write('<h1>Kitchen View</h1>');
-    
-    // Get the selected date and include it as the title in print
-    var selectedDateTitle = document.getElementById("date-title").innerHTML;
-    printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+    // Function to automatically submit the form when the date is changed
+    function submitDateFilter() {
+        document.getElementById("date-filter-form").submit();
+    }
 
-    // Print the table
-    var tableHTML = document.getElementById("order-table").outerHTML;
-    printWindow.document.write(tableHTML);
-    printWindow.document.write('</body></html>');
+    function printTable() {
+        var printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Kitchen View</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('@media print {');
+        printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
+        printWindow.document.write('h1, h2 { text-align: center; margin: 10px 0; }');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; font-size: 0.8em; }');
+        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 6px; }');
+        printWindow.document.write('th { background-color: #f2f2f2; }');
+        printWindow.document.write('button, #order_date, label { display: none; }');
+        printWindow.document.write('}');
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write('<h1>Kitchen View</h1>');
+        
+        var selectedDateTitle = "";
+        if (document.getElementById("date-title")) {
+            selectedDateTitle = document.getElementById("date-title").innerHTML;
+            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+            printWindow.document.title = "Kitchen View - " + selectedDateTitle;
+        }
 
-    printWindow.document.close(); // Close the document
-    printWindow.print(); // Trigger the print dialog
-}
+        var tableHTML = document.getElementById("order-table").outerHTML;
+        printWindow.document.write(tableHTML);
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close(); 
+        printWindow.print(); 
+    }
 </script>
+
 {% endblock %}
