@@ -9,35 +9,42 @@
 {% block nav-global %}
 <div class="nav-global">
     <a href="{% url 'admin:shop_management' %}" class="btn">Shop</a>
+    <span class="separator">|</span>
     <a href="{% url 'admin:order_list' %}" class="btn">Orders</a>
+    <span class="separator">|</span>
     <a href="{% url 'admin:kitchen_view' %}" class="btn">Kitchen</a>
+    <span class="separator">|</span>
     <a href="{% url 'admin:sorting_bay' %}" class="btn">Sorting</a>
+    <span class="separator">|</span>
     <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging</a>
 </div>
 {% endblock %}
+
 
 {% block content %}
 <h1 class="page-title">Packaging Bay View</h1>
 
 <!-- Date filter form -->
-<div class="filter-form">
+<div style="display: flex; justify-content: center; margin-bottom: 15px;">
     <form method="GET" action="{% url 'admin:packaging_bay' %}" id="date-filter-form">
-        <label for="order_date">Select Order Date:</label>
+        <label for="order_date" style="font-size: 1em; margin-right: 8px;">Select Order Date:</label>
         <input 
             type="date" 
             id="order_date" 
             name="order_date" 
             value="{{ selected_date|date:'Y-m-d' }}" 
-            onchange="submitDateFilter()">
+            onchange="submitDateFilter()" 
+            style="padding: 4px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 4px;"
+        >
     </form>
 </div>
 
-<!-- Print all orders -->
-{% if orders %}
+<!-- Button to print all orders at once -->
 <div class="print-btn-container">
-    <button class="btn print-btn" onclick="printAllOrders()">Print All Orders</button>
+    {% if orders %}
+        <button class="btn print-btn" onclick="printAllOrders()">Print All Orders</button>
+    {% endif %}
 </div>
-{% endif %}
 
 <div id="all-orders" class="order-grid">
     {% for order in orders %}
@@ -56,6 +63,8 @@
         </ul>
         
         <p><strong>Total Price:</strong> ₹{{ order.price }}</p>
+        
+        <!-- Button to print this specific order -->
         <button class="btn print-btn" onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
     </div>
     {% empty %}
@@ -64,83 +73,83 @@
 </div>
 
 <script>
+    // Function to automatically submit the form when the date is changed
     function submitDateFilter() {
         document.getElementById("date-filter-form").submit();
     }
 
+    // Function to print a specific order by its element ID
     function printOrder(orderId) {
         var printContents = document.getElementById(orderId).innerHTML;
         var originalContents = document.body.innerHTML;
-        document.body.innerHTML = '<div class="print-box">' + printContents + '</div>';
+
+        // Remove the print button and add a bounding box
+        printContents = '<div class="print-box">' + printContents + '</div>';
+
+        document.body.innerHTML = printContents;
         window.print();
         document.body.innerHTML = originalContents;
     }
 
+    // Function to print all orders
     function printAllOrders() {
         window.print();
     }
 </script>
 
 <style>
-    /* General Layout */
     .nav-global {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 12px;
-        padding: 10px 0;
-        background-color: #f9f9f9;
+        gap: 8px;
+        padding: 10px;
+        background-color: #f8f9fa; /* Light gray background for contrast */
+        border-bottom: 1px solid #ddd;
     }
-
-    .nav-global .btn {
-        padding: 8px 16px;
+    .btn {
         text-decoration: none;
-        color: #333;
-        background-color: #fff;
-        border: 1px solid #ccc;
+        color: #007bff;
+        padding: 8px 12px;
+        font-size: 0.9em;
         border-radius: 4px;
-        transition: background-color 0.3s, border-color 0.3s;
+        transition: background-color 0.3s ease;
     }
-
-    .nav-global .btn:hover {
-        background-color: #eee;
-        border-color: #bbb;
+    .btn:hover {
+        background-color: #007bff;
+        color: white;
     }
-
+    .separator {
+        color: #ccc;
+        font-size: 1.2em;
+        margin: 0 4px;
+        
+    /* General Layout */
     .page-title {
         text-align: center;
-        font-size: 1.8em;
         color: #333;
-        margin: 20px 0;
-    }
-
-    .filter-form {
-        display: flex;
-        justify-content: center;
+        font-size: 2em;
         margin-bottom: 20px;
     }
 
-    .filter-form label {
-        margin-right: 10px;
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
         font-size: 1em;
+        cursor: pointer;
+        text-align: center;
     }
 
-    .filter-form input {
-        padding: 8px;
-        font-size: 1em;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+    .print-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        margin-top: 10px;
     }
 
     .print-btn-container {
         text-align: center;
         margin-bottom: 20px;
-    }
-
-    .btn.print-btn {
-        background-color: #4CAF50;
-        color: #fff;
-        border: none;
     }
 
     .order-grid {
@@ -151,28 +160,99 @@
     }
 
     .order-details {
-        padding: 15px;
         border: 1px solid #ddd;
+        padding: 15px;
         background-color: #f9f9f9;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
         page-break-inside: avoid;
     }
 
-    .order-details h2, .order-details h3 {
+    .order-details h2 {
+        font-size: 1.5em;
+        color: #333;
         margin-bottom: 10px;
     }
 
+    .order-details h3 {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .order-details p {
+        font-size: 1em;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .order-details ul {
+        margin-bottom: 15px;
+    }
+
+    .order-details li {
+        font-size: 1em;
+        color: #333;
+    }
+
+    /* Bounding box for print */
+    .print-box {
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: white;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+    }
+
+    /* Print-specific styles */
+    @media print {
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .btn, .filter-form, .print-btn-container {
+            display: none;
+        }
+
+        .order-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Adjust for 6 items per page */
+            gap: 10px;
+        }
+
+        .order-details {
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 0;
+            background-color: white;
+            box-shadow: none;
+        }
+
+        h1 {
+            display: none;
+        }
+
+        /* Ensuring each row fits fully on one page by breaking after groups of orders */
+        .order-grid > .order-details:nth-child(6n) {
+            page-break-after: always;
+        }
+
+        /* Specific print layout */
+        .order-details .print-btn {
+            display: none; /* Hide the "Print This Order" button */
+        }
+
+        .order-details h2, .order-details h3, .order-details p, .order-details li {
+            font-size: 0.9em; /* Adjust font size for print */
+        }
+    }
+
+    /* Center align the "No orders available" message */
     .no-orders-message {
         text-align: center;
         color: #666;
         font-size: 1.2em;
         margin-top: 20px;
-    }
-
-    @media print {
-        .btn, .filter-form {
-            display: none;
-        }
     }
 </style>
 
