@@ -24,13 +24,13 @@
     .module h2 {
         font-size: 2rem;
         font-weight: 500;
-        color: #424242;
+        color: #ffffff; /* Material Design primary color */
         margin-bottom: 1rem;
     }
 
     .module p {
         font-size: 1rem;
-        color: #757575;
+        color: #757575; /* Material Design secondary text color */
         margin-bottom: 2rem;
     }
 
@@ -51,10 +51,10 @@
     }
 
     .btn:hover {
-        background-color: #303f9f;
-        color: #ffffff;
-        transform: translateY(-2px);
-        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+        background-color: #303f9f; /* Darker background color */
+        color: #ffffff; /* Change text to white */
+        transform: translateY(-2px); /* Lift effect */
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
     }
 
     .btn:active {
@@ -70,51 +70,6 @@
         gap: 1.5rem;
     }
 
-    /* Status Indicator Styles */
-    .status-indicator {
-        position: absolute;
-        top: 80px; /* Below the navbar */
-        right: 20px;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .status-light {
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .status-light.red {
-        background-color: #f44336; /* Red */
-    }
-
-    .status-light.yellow {
-        background-color: #ffeb3b; /* Yellow */
-    }
-
-    .status-light.green {
-        background-color: #4caf50; /* Green */
-    }
-
-    .status-light:hover::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        top: -30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #424242;
-        color: #fff;
-        font-size: 0.8rem;
-        padding: 5px 10px;
-        border-radius: 4px;
-        white-space: nowrap;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
     /* Responsive Styles */
     @media (max-width: 768px) {
         .module {
@@ -126,12 +81,12 @@
         }
 
         .grid-container {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr; /* Stack buttons vertically on small screens */
             gap: 1rem;
         }
 
         .btn {
-            font-size: 0.9rem;
+            font-size: 0.9rem; /* Slightly smaller text for buttons on smaller screens */
             padding: 0.6rem 1rem;
         }
     }
@@ -142,7 +97,7 @@
         }
 
         .btn {
-            font-size: 0.8rem;
+            font-size: 0.8rem; /* Adjust font size further for very small screens */
             padding: 0.5rem 0.8rem;
         }
     }
@@ -150,22 +105,6 @@
 {% endblock %}
 
 {% block content %}
-<!-- Status Indicator -->
-<div class="status-indicator">
-    <div 
-        class="status-light red" 
-        data-tooltip="Shop Closed">
-    </div>
-    <div 
-        class="status-light yellow" 
-        data-tooltip="Gate Closed">
-    </div>
-    <div 
-        class="status-light green" 
-        data-tooltip="Shop Open">
-    </div>
-</div>
-
 <div class="module">
     <h2>FreshServe Admin Portal</h2>
     <p>Manage all kitchen-related functionalities below:</p>
@@ -179,5 +118,5 @@
         <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging Bay</a>
     </div>
 </div>
-{{ block.super }}
+{{ block.super }} <!-- Ensure other content from the base template is rendered -->
 {% endblock %}
