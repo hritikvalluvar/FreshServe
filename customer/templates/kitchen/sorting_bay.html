@@ -28,14 +28,11 @@
         </thead>
         <tbody>
             {% for category, subcategories in category_summary.items %}
-                <!-- Category Row -->
-                <tr class="category-row">
-                    <td colspan="3">{{ category }}</td>
-                </tr>
                 {% for subcategory, count in subcategories.items %}
-                    <!-- Subcategory Row -->
                     <tr>
-                        <td></td>
+                        {% if forloop.first %}
+                            <td rowspan="{{ subcategories|length }}">{{ category }}</td>
+                        {% endif %}
                         <td>{{ subcategory }}</td>
                         <td>{{ count }}</td>
                     </tr>
@@ -60,7 +57,6 @@
             table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
             th, td { border: 1px solid black; text-align: left; padding: 12px; }
             th { background-color: #f4f4f4; }
-            .category-row td { font-weight: bold; background-color: #e9ecef; text-align: center; }
             .no-data { text-align: center; color: #999; font-style: italic; }
         `);
         printWindow.document.write('</style></head><body>');
@@ -98,12 +94,6 @@
     .sorting-table th {
         background-color: #f4f4f4;
         font-weight: bold;
-    }
-
-    .category-row td {
-        font-weight: bold;
-        background-color: #e9ecef;
-        text-align: center;
     }
 
     .no-data {
