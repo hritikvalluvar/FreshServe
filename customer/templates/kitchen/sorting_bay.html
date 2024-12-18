@@ -26,13 +26,21 @@
     </h2>
 {% endif %}
 
+<div style="text-align: center; margin-top: 15px;">
+    <button 
+        onclick="printTable()" 
+        style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 0.9em; cursor: pointer;">
+        Print Sorting Bay
+    </button>
+</div>
+
 <div id="sorting-bay-table" style="overflow-x: auto; margin: 0 auto; width: 95%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 8px;">
     <table style="width: 100%; text-align: center; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 0.85em;">
         <thead>
             <tr style="background-color: #f2f2f2; border-bottom: 2px solid #ddd;">
-                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Category</strong></th>
-                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Subcategory</strong></th>
-                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Occurrence</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;"><strong>Category</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;"><strong>Subcategory</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: center;"><strong>Count</strong></th>
             </tr>
         </thead>
         <tbody>
@@ -53,14 +61,6 @@
             {% endfor %}
         </tbody>
     </table>
-</div>
-
-<div style="text-align: center; margin-top: 15px;">
-    <button 
-        onclick="printTable()" 
-        style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 0.9em; cursor: pointer;">
-        Print Sorting Bay
-    </button>
 </div>
 
 <script>
