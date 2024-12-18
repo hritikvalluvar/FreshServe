@@ -3,6 +3,14 @@
 {% block content %}
 <h1 class="page-title">Packaging Bay View</h1>
 
+<!-- Date selection form (without the filter button) -->
+<div class="filter-form">
+    <form method="GET" action="{% url 'admin:packaging_bay' %}">
+        <label for="order_date">Select Order Date:</label>
+        <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+    </form>
+</div>
+
 <!-- Button to print all orders at once -->
 <div class="print-btn-container">
     {% if orders %}
