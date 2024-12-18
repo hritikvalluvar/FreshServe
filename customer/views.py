@@ -261,6 +261,7 @@ def shop_management(request):
 
 def order_list(request):
     selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
+    
     # Parse selected_date if provided, else use today's date
     if selected_date:
         selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
@@ -386,14 +387,19 @@ from .models import Order
 
 def sorting_bay(request):
     # Get the selected date from GET parameters
-    selected_date = request.GET.get('order_date', None)
+    selected_date = request.GET.get('order_date')
 
-    # Filter orders by date and payment status
+    # Parse selected_date if provided, else use today's date
     if selected_date:
-        orders = Order.objects.filter(order_date=selected_date, is_paid=True)
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
     else:
-        orders = Order.objects.filter(order_date=now().date(), is_paid=True)
-        selected_date=now().date()
+        selected_date = now().date()
+
+    # Retrieve and filter orders in a single step
+    orders = Order.objects.filter(
+        order_date=selected_date, 
+        is_paid=True
+    )
 
     # Generate the category summary
     category_summary = {}
