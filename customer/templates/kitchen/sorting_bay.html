@@ -1,125 +1,134 @@
 {% extends 'admin/base_site.html' %}
 
-{% block title %}Tanuja's BatterHouse - Sorting Bay{% endblock %}
-
-{% block branding %}
-<h1 id="site-name"><a href="{% url 'admin:index' %}">Tanuja's BatterHouse</a></h1>
-{% endblock %}
-
-{% block nav-global %}
-<div class="nav-global">
-    <a href="{% url 'admin:shop_management' %}" class="btn">Shop</a>
-    <span class="separator">|</span>
-    <a href="{% url 'admin:order_list' %}" class="btn">Orders</a>
-    <span class="separator">|</span>
-    <a href="{% url 'admin:kitchen_view' %}" class="btn">Kitchen</a>
-    <span class="separator">|</span>
-    <a href="{% url 'admin:sorting_bay' %}" class="btn">Sorting</a>
-    <span class="separator">|</span>
-    <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging</a>
-</div>
-{% endblock %}
+{% block title %}Tanuja's BatterHouse{% endblock %}
 
 {% block content %}
-<div class="content">
-    <h1>Sorting Bay</h1>
+<h1>Sorting Bay</h1>
 
-    <!-- Date filter form -->
-    <form method="GET" action="{% url 'admin:sorting_bay' %}" class="filter-form">
-        <label for="order_date">Order Date:</label>
-        <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
-        <button type="submit">Filter</button>
-    </form>
+<!-- Date filter form -->
+<form method="GET" action="{% url 'admin:sorting_bay' %}">
+    <label for="order_date">Select Order Date:</label>
+    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
 
-    {% if selected_date %}
-    <h2 class="date-title">{{ selected_date|date:"l, d F Y" }}</h2>
-    {% endif %}
+{% if selected_date %}
+    <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2>
+{% endif %}
 
-    <!-- Sorting Bay Table -->
-    <div class="sorting-bay-table">
-        <table>
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Subcategory</th>
-                    <th>Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for category, subcategories in category_summary.items %}
+<!-- Sorting Bay Table -->
+<div id="sorting-bay-table">
+    <table class="sorting-table">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Occurrence</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category, subcategories in category_summary.items %}
+                <!-- Category Row -->
                 <tr class="category-row">
                     <td colspan="3">{{ category }}</td>
                 </tr>
                 {% for subcategory, count in subcategories.items %}
-                <tr>
-                    <td></td>
-                    <td>{{ subcategory }}</td>
-                    <td>{{ count }}</td>
-                </tr>
+                    <!-- Subcategory Row -->
+                    <tr>
+                        <td></td>
+                        <td>{{ subcategory }}</td>
+                        <td>{{ count }}</td>
+                    </tr>
                 {% endfor %}
-                {% empty %}
+            {% empty %}
                 <tr>
                     <td colspan="3" class="no-data">No data available for the selected date.</td>
                 </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <button onclick="printTable()">Print Summary</button>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-<style>
-    .content {
-        margin: 20px auto;
-        max-width: 800px;
-    }
-    .filter-form {
-        margin-bottom: 20px;
-    }
-    .filter-form label {
-        font-weight: bold;
-        margin-right: 10px;
-    }
-    .sorting-bay-table table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    .sorting-bay-table th, .sorting-bay-table td {
-        border: 1px solid #ccc;
-        padding: 8px;
-        text-align: left;
-    }
-    .category-row {
-        background-color: #f9f9f9;
-        font-weight: bold;
-    }
-    .no-data {
-        text-align: center;
-        font-style: italic;
-    }
-</style>
+<button onclick="printTable()" class="btn btn-secondary">Print Sorting Bay</button>
 
 <script>
     function printTable() {
-        const printWindow = window.open('', '', 'height=600,width=800');
+        var printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>Sorting Bay Summary</title>');
-        printWindow.document.write('<style>table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ccc; padding: 8px; }</style>');
-        printWindow.document.write('</head><body>');
-        printWindow.document.write('<h1>Sorting Bay Summary</h1>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
+            table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+            th, td { border: 1px solid black; text-align: left; padding: 12px; }
+            th { background-color: #f4f4f4; }
+            .category-row td { font-weight: bold; background-color: #e9ecef; text-align: center; }
+            .no-data { text-align: center; color: #999; font-style: italic; }
+        `);
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write('<h1>Sorting Bay</h1>');
 
-        const dateTitle = document.querySelector('.date-title');
-        if (dateTitle) {
-            printWindow.document.write(`<h2>${dateTitle.textContent}</h2>`);
+        if (document.getElementById("date-title")) {
+            const selectedDateTitle = document.getElementById("date-title").innerHTML;
+            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+            printWindow.document.title = "Sorting Bay - " + selectedDateTitle;
         }
 
-        const tableHTML = document.querySelector('.sorting-bay-table').innerHTML;
+        const tableHTML = document.getElementById("sorting-bay-table").outerHTML;
         printWindow.document.write(tableHTML);
-
         printWindow.document.write('</body></html>');
+
         printWindow.document.close();
         printWindow.print();
     }
 </script>
+
+<style>
+    .sorting-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .sorting-table th,
+    .sorting-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .sorting-table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    .category-row td {
+        font-weight: bold;
+        background-color: #e9ecef;
+        text-align: center;
+    }
+
+    .no-data {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 15px;
+        font-size: 14px;
+        color: white;
+        background-color: #007bff;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+</style>
 {% endblock %}
