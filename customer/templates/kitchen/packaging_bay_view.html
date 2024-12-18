@@ -169,7 +169,7 @@
 
         .order-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr); /* Adjust for 6 items per page */
             gap: 10px;
         }
 
@@ -186,13 +186,17 @@
         }
 
         /* Ensuring each row fits fully on one page by breaking after groups of orders */
-        .order-grid > .order-details:nth-child(4n) {
+        .order-grid > .order-details:nth-child(6n) {
             page-break-after: always;
         }
 
         /* Specific print layout */
         .order-details .print-btn {
-            display: none;
+            display: none; /* Hide the "Print This Order" button */
+        }
+
+        .order-details h2, .order-details h3, .order-details p, .order-details li {
+            font-size: 0.9em; /* Adjust font size for print */
         }
     }
 
