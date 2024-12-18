@@ -31,7 +31,7 @@
                 {% for subcategory, count in subcategories.items %}
                     <tr>
                         {% if forloop.first %}
-                            <td rowspan="{{ subcategories|length }}">{{ category }}</td>
+                            <td rowspan="{{ subcategories|length }}" class="category-cell">{{ category }}</td>
                         {% endif %}
                         <td>{{ subcategory }}</td>
                         <td>{{ count }}</td>
@@ -93,6 +93,12 @@
 
     .sorting-table th {
         background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    .category-cell {
+        text-align: center;
+        vertical-align: middle;
         font-weight: bold;
     }
 
