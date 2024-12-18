@@ -39,6 +39,12 @@
     </form>
 </div>
 
+{% if selected_date %}
+    <h2 id="date-title" style="text-align: center; font-size: 1.5em; margin-bottom: 20px; color: #4CAF50;">
+        {{ selected_date|date:"l, d F Y" }}
+    </h2>
+{% endif %}
+
 <!-- Button to print all orders at once -->
 <div class="print-btn-container">
     {% if orders %}
