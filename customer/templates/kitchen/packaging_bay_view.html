@@ -47,7 +47,7 @@
         <button class="btn print-btn" onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
     </div>
     {% empty %}
-    <p>No orders available for the selected date.</p>
+    <p class="no-orders-message">No orders available for the selected date.</p>
     {% endfor %}
 </div>
 
@@ -72,7 +72,15 @@
 
     // Function to print all orders
     function printAllOrders() {
+        var originalContents = document.body.innerHTML;
+        var printContents = document.getElementById('all-orders').innerHTML;
+
+        // Hide unnecessary parts for the print view
+        printContents = '<div class="print-box">' + printContents + '</div>';
+
+        document.body.innerHTML = printContents;
         window.print();
+        document.body.innerHTML = originalContents;
     }
 </script>
 
@@ -151,7 +159,7 @@
     /* Bounding box for print */
     .print-box {
         border: 1px solid #ddd;
-        padding: 20px;
+        padding: 10px;
         background-color: white;
         box-sizing: border-box;
         page-break-inside: avoid;
@@ -169,7 +177,7 @@
 
         .order-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 10px;
         }
 
@@ -189,6 +197,19 @@
         .order-grid > .order-details:nth-child(4n) {
             page-break-after: always;
         }
+
+        /* Specific print layout */
+        .order-details .print-btn {
+            display: none;
+        }
+    }
+
+    /* Center align the "No orders available" message */
+    .no-orders-message {
+        text-align: center;
+        color: #666;
+        font-size: 1.2em;
+        margin-top: 20px;
     }
 </style>
 
