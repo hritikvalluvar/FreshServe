@@ -3,61 +3,83 @@
 {% block title %}Tanuja's BatterHouse{% endblock %}
 
 {% block content %}
-<h1>Sorting Bay</h1>
+<h1 style="text-align: center; font-size: 2em; margin-bottom: 10px;">Sorting Bay</h1>
 
 <!-- Date filter form -->
-<form method="GET" action="{% url 'admin:sorting_bay' %}">
-    <label for="order_date">Select Order Date:</label>
-    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
-    <button type="submit" class="btn btn-primary">Filter</button>
-</form>
+<div style="display: flex; justify-content: center; margin-bottom: 15px;">
+    <form method="GET" action="{% url 'admin:sorting_bay' %}" id="date-filter-form">
+        <label for="order_date" style="font-size: 1em; margin-right: 8px;">Select Order Date:</label>
+        <input 
+            type="date" 
+            id="order_date" 
+            name="order_date" 
+            value="{{ selected_date|date:'Y-m-d' }}" 
+            onchange="submitDateFilter()" 
+            style="padding: 4px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 4px;"
+        >
+    </form>
+</div>
 
 {% if selected_date %}
-    <h2 id="date-title">{{ selected_date|date:"l, d F Y" }}</h2>
+    <h2 id="date-title" style="text-align: center; font-size: 1.5em; margin-bottom: 20px; color: #4CAF50;">
+        {{ selected_date|date:"l, d F Y" }}
+    </h2>
 {% endif %}
 
-<!-- Sorting Bay Table -->
-<div id="sorting-bay-table">
-    <table class="sorting-table">
+<div id="sorting-bay-table" style="overflow-x: auto; margin: 0 auto; width: 95%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 8px;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 0.85em;">
         <thead>
-            <tr>
-                <th>Category</th>
-                <th>Subcategory</th>
-                <th>Occurrence</th>
+            <tr style="background-color: #f2f2f2; border-bottom: 2px solid #ddd;">
+                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Category</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Subcategory</strong></th>
+                <th style="padding: 8px; border: 1px solid #ddd;"><strong>Occurrence</strong></th>
             </tr>
         </thead>
         <tbody>
             {% for category, subcategories in category_summary.items %}
                 {% for subcategory, count in subcategories.items %}
-                    <tr>
+                    <tr style="border-bottom: 1px solid #ddd;">
                         {% if forloop.first %}
-                            <td rowspan="{{ subcategories|length }}" class="category-cell">{{ category }}</td>
+                            <td rowspan="{{ subcategories|length }}" style="padding: 8px; border: 1px solid #ddd; font-weight: bold; vertical-align: middle;">{{ category }}</td>
                         {% endif %}
-                        <td>{{ subcategory }}</td>
-                        <td>{{ count }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ subcategory }}</td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{{ count }}</td>
                     </tr>
                 {% endfor %}
             {% empty %}
                 <tr>
-                    <td colspan="3" class="no-data">No data available for the selected date.</td>
+                    <td colspan="3" style="padding: 15px; text-align: center; font-size: 1em; color: #777;">No data available for the selected date.</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 
-<button onclick="printTable()" class="btn btn-secondary">Print Sorting Bay</button>
+<div style="text-align: center; margin-top: 15px;">
+    <button 
+        onclick="printTable()" 
+        style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 0.9em; cursor: pointer;">
+        Print Sorting Bay
+    </button>
+</div>
 
 <script>
+    function submitDateFilter() {
+        document.getElementById("date-filter-form").submit();
+    }
+
     function printTable() {
         var printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>Sorting Bay Summary</title>');
         printWindow.document.write('<style>');
         printWindow.document.write(`
-            table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
-            th, td { border: 1px solid black; text-align: left; padding: 12px; }
-            th { background-color: #f4f4f4; }
-            .no-data { text-align: center; color: #999; font-style: italic; }
+            body { font-family: Arial, sans-serif; margin: 10px; }
+            h1, h2 { text-align: center; margin: 10px 0; }
+            table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+            th, td { border: 1px solid black; padding: 6px; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            td { text-align: center; }
+            button, #order_date, label { display: none; }
         `);
         printWindow.document.write('</style></head><body>');
         printWindow.document.write('<h1>Sorting Bay</h1>');
@@ -77,54 +99,4 @@
     }
 </script>
 
-<style>
-    .sorting-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    .sorting-table th,
-    .sorting-table td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-    }
-
-    .sorting-table th {
-        background-color: #f4f4f4;
-        font-weight: bold;
-    }
-
-    .category-cell {
-        text-align: center;
-        vertical-align: middle;
-        font-weight: bold;
-    }
-
-    .no-data {
-        text-align: center;
-        color: #999;
-        font-style: italic;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 10px 15px;
-        font-size: 14px;
-        color: white;
-        background-color: #007bff;
-        text-decoration: none;
-        border-radius: 4px;
-        margin-top: 10px;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-    }
-
-    .btn:hover {
-        background-color: #0056b3;
-    }
-</style>
 {% endblock %}
