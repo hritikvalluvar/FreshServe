@@ -24,7 +24,7 @@
         {% if shop_open and gate_open %}
             <h2 style="color: green;">The shop is open and accepting orders.</h2>
         {% elif shop_open and not gate_open %}
-            <h2 style="color: orange;"></h2>
+            <h2 style="color: orange;">Not accepting new orders, but shop open for current orders.</h2>
         {% else %}
             <h2 style="color: red;">The shop is closed and not accepting any orders.</h2>
         {% endif %}
