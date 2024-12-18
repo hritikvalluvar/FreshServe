@@ -1,17 +1,21 @@
 {% extends 'admin/base.html' %}
 
 {% block content %}
-<h1>Packaging Bay View</h1>
+<h1 class="page-title">Packaging Bay View</h1>
 
 <!-- Date filter form -->
-<form method="GET" action="{% url 'admin:packaging_bay' %}">
-    <label for="order_date">Select Order Date:</label>
-    <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
-    <button type="submit">Filter</button>
-</form>
+<div class="filter-form">
+    <form method="GET" action="{% url 'admin:packaging_bay' %}">
+        <label for="order_date">Select Order Date:</label>
+        <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+        <button type="submit" class="btn primary-btn">Filter</button>
+    </form>
+</div>
 
 <!-- Button to print all orders at once -->
-<button onclick="printAllOrders()">Print All Orders</button>
+<div class="print-btn-container">
+    <button class="btn secondary-btn" onclick="printAllOrders()">Print All Orders</button>
+</div>
 
 <div id="all-orders" class="order-grid">
     {% for order in orders %}
@@ -32,7 +36,7 @@
         <p><strong>Total Price:</strong> ₹{{ order.price }}</p>
         
         <!-- Button to print this specific order -->
-        <button onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
+        <button class="btn print-btn" onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
     </div>
     {% empty %}
     <p>No orders available for the selected date.</p>
@@ -57,44 +61,120 @@
 </script>
 
 <style>
-    /* Grid layout for orders */
+    /* General Layout */
+    .page-title {
+        text-align: center;
+        color: #333;
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .filter-form {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .primary-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+    }
+
+    .secondary-btn {
+        background-color: #FF9800;
+        color: white;
+        border: none;
+    }
+
+    .print-btn {
+        background-color: #2196F3;
+        color: white;
+        border: none;
+    }
+
     .order-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 20px;
+        padding: 20px;
     }
 
     .order-details {
-        border: 1px solid black;
+        border: 1px solid #ddd;
         padding: 15px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
-        page-break-inside: avoid; /* Prevent order from breaking across pages */
+        page-break-inside: avoid;
+    }
+
+    .order-details h2 {
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .order-details h3 {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .order-details p {
+        font-size: 1em;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .order-details ul {
+        margin-bottom: 15px;
+    }
+
+    .order-details li {
+        font-size: 1em;
+        color: #333;
     }
 
     /* Print-specific styles */
     @media print {
-        button { display: none; } /* Hide print buttons */
+        body {
+            font-family: Arial, sans-serif;
+        }
 
-        /* Grid layout for multiple orders per page in print */
+        .btn, .filter-form, .print-btn-container {
+            display: none;
+        }
+
         .order-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Two orders per row */
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }
 
         .order-details {
             padding: 10px;
-            border: 1px solid black;
+            border: 1px solid #ddd;
             margin-bottom: 0;
-            page-break-inside: avoid;
+            background-color: white;
+            box-shadow: none;
         }
 
-        /* Ensuring each row fits fully on one page by breaking after groups of rows */
-        .order-grid > .order-details:nth-child(6n) {
-            page-break-after: always; /* Force a new page every 4 orders */
+        h1 {
+            display: none;
         }
 
-        h1 { display: none; } /* Hide the title in print view */
+        /* Ensuring each row fits fully on one page by breaking after groups of orders */
+        .order-grid > .order-details:nth-child(4n) {
+            page-break-after: always;
+        }
     }
 </style>
 
