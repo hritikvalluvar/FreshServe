@@ -199,7 +199,41 @@ class PaymentSuccess(View):
             print("Error during payment success handling:", e)
             return JsonResponse({'error': 'An error occurred while verifying the payment.'}, status=500)
 
+
+def check_payment_status(selected_date):
+    selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+
+    orders = Order.objects.filter(order_date=selected_date, is_paid=False)
+
+    if not orders.exists():
+        return
+
+    merchant_id = settings.PHONEPE_MERCHANT_ID
+    salt_key = settings.PHONEPE_SECRET_KEY
+    salt_index = settings.PHONEPE_SALT_INDEX
+    env = Env.PROD
+
+    phonepe_client = PhonePePaymentClient(
+        merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
+    )
+
+    for order in orders:
+        merchant_transaction_id = f"order_{order.order_id}"
+        response = phonepe_client.check_status(merchant_transaction_id)
+
+        if response.data.state == 'COMPLETED':
+            order.is_paid = True
+            order.transaction_id = response.data.transaction_id
+            order.save()
         
+        elif response.data.state == 'FAILED':
+            order_items = OrderItem.objects.filter(order=order)
+            order_items.delete()
+            order.delete()
+
+    return
+
+
 def shop_management(request):
     # Retrieve or initialize ShopClosed and GateClosed models
     shop_status, _ = ShopClosed.objects.get_or_create(pk=1)
@@ -254,6 +288,8 @@ def order_list(request):
     else:
         selected_date = now().date()
 
+    check_payment_status(selected_date)
+    
     # Retrieve and filter orders in a single step
     orders = Order.objects.filter(
         order_date=selected_date, 
