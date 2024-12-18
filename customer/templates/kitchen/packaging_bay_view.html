@@ -74,7 +74,9 @@
         <button class="btn print-btn" onclick="printOrder('order-{{ order.order_id }}')">Print This Order</button>
     </div>
     {% empty %}
-    <p class="no-orders-message">No orders available for the selected date.</p>
+        <p class="no-orders-message" style="text-align: center; margin: 20px 0; font-size: 1em; color: #777;">
+            No orders available for the selected date.
+        </p>    
     {% endfor %}
 </div>
 
