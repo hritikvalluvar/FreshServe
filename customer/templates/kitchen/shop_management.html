@@ -22,11 +22,11 @@
     <!-- Display message based on the shop and gate status -->
     <div style="text-align: center; margin-bottom: 20px;">
         {% if shop_open and gate_open %}
-            <h2 style="color: green;">The shop is open.</h2>
+            <h2 style="color: green;">The shop is open and accepting orders.</h2>
         {% elif shop_open and not gate_open %}
-            <h2 style="color: orange;">Gate is open for accepting orders. The shop is currently closed.</h2>
+            <h2 style="color: orange;"></h2>
         {% else %}
-            <h2 style="color: red;">The shop is closed.</h2>
+            <h2 style="color: red;">The shop is closed and not accepting any orders.</h2>
         {% endif %}
     </div>
 
@@ -44,19 +44,19 @@
         <div class="button-container" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
             <button type="submit" name="open_shop" class="button" id="open-shop-btn" 
                 {% if not dateField.value and not shop_open %} disabled {% endif %}
-                style="background-color: green; color: white; padding: 12px; border: none; border-radius: 5px; width: 200px; font-size: 1em; cursor: pointer;">
+                style="background-color: #28a745; color: white; padding: 14px 20px; border: none; border-radius: 8px; width: 200px; font-size: 1.1em; cursor: pointer; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
                 Open Shop
             </button>
             
             <button type="submit" name="close_shop" class="button" id="close-shop-btn" 
                 {% if not shop_open %} disabled {% endif %}
-                style="background-color: red; color: white; padding: 12px; border: none; border-radius: 5px; width: 200px; font-size: 1em; cursor: pointer;">
+                style="background-color: #dc3545; color: white; padding: 14px 20px; border: none; border-radius: 8px; width: 200px; font-size: 1.1em; cursor: pointer; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
                 Close Shop
             </button>
             
             <button type="submit" name="close_gate" class="button" id="close-gate-btn" 
                 {% if not gate_open %} disabled {% endif %}
-                style="background-color: orange; color: white; padding: 12px; border: none; border-radius: 5px; width: 200px; font-size: 1em; cursor: pointer;">
+                style="background-color: #fd7e14; color: white; padding: 14px 20px; border: none; border-radius: 8px; width: 200px; font-size: 1.1em; cursor: pointer; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;">
                 Close Gate for Orders
             </button>
         </div>
@@ -88,6 +88,11 @@
         background-color: #ccc;
         color: #666;
         cursor: not-allowed;
+    }
+
+    /* Hover effects for buttons */
+    button:hover {
+        opacity: 0.9;
     }
 </style>
 
