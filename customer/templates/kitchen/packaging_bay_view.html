@@ -72,15 +72,7 @@
 
     // Function to print all orders
     function printAllOrders() {
-        var originalContents = document.body.innerHTML;
-        var printContents = document.getElementById('all-orders').innerHTML;
-
-        // Hide unnecessary parts for the print view
-        printContents = '<div class="print-box">' + printContents + '</div>';
-
-        document.body.innerHTML = printContents;
         window.print();
-        document.body.innerHTML = originalContents;
     }
 </script>
 
