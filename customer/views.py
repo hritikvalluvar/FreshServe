@@ -1,38 +1,26 @@
 # Standard library imports
 from decimal import Decimal, ROUND_DOWN
+from datetime import datetime
 import json
 
-
-from datetime import datetime
-from django.shortcuts import render, redirect
-from django.utils import timezone
-
-
+# Django imports
+from django.utils.timezone import now, timezone
 from django.conf import settings
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.views import View
-from django.db.models import Sum, F
-
 
 # Local application imports
-from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
-
-# Standard library imports
-from decimal import Decimal, ROUND_DOWN
-
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.views import View
-from django.conf import settings
+from .models import (
+    Product,
+    GateClosed,
+    ShopClosed,
+    Order,
+    OrderItem,
+    OrderAvailability,
+)
 
 # PhonePe SDK imports
-from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
-from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
-from phonepe.sdk.pg.env import Env
-
-# Local application imports
-from .models import Product, Order, OrderItem, OrderAvailability
-
 from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
 from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
 from phonepe.sdk.pg.env import Env
@@ -212,7 +200,6 @@ class PaymentSuccess(View):
             return JsonResponse({'error': 'An error occurred while verifying the payment.'}, status=500)
 
         
-
 def shop_management(request):
     # Retrieve or initialize ShopClosed and GateClosed models
     shop_status, _ = ShopClosed.objects.get_or_create(pk=1)
@@ -258,7 +245,6 @@ def shop_management(request):
     return render(request, 'kitchen/shop_management.html', context)
 
 
-
 def order_list(request):
     selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
     
@@ -281,8 +267,6 @@ def order_list(request):
         'sum': total,
         'selected_date': selected_date,  # Pass the selected date to the template
     })
-
-
 
 
 def kitchen_view(request):
@@ -360,7 +344,6 @@ def kitchen_view(request):
     return render(request, 'kitchen/kitchen_view.html', context)
 
 
-
 def packaging_bay_view(request):
     selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
     
@@ -382,12 +365,6 @@ def packaging_bay_view(request):
     }
     return render(request, 'kitchen/packaging_bay_view.html', context)
 
-from django.shortcuts import render
-from .models import Order, OrderItem
-
-from django.shortcuts import render
-from django.utils.timezone import now
-from .models import Order
 
 def sorting_bay(request):
     # Get the selected date from GET parameters
