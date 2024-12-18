@@ -378,6 +378,7 @@ def packaging_bay_view(request):
     
     context = {
         'orders': orders,
+        'selected_date': selected_date,
     }
     return render(request, 'kitchen/packaging_bay_view.html', context)
 
