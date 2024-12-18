@@ -391,6 +391,7 @@ def sorting_bay(request):
         orders = Order.objects.filter(order_date=selected_date, is_paid=True)
     else:
         orders = Order.objects.filter(order_date=now().date(), is_paid=True)
+        selected_date=now().date()
 
     # Generate the category summary
     category_summary = {}
