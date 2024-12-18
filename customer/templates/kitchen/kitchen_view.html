@@ -8,13 +8,46 @@
 
 {% block nav-global %}
 <div class="nav-global">
-    <a href="{% url 'admin:shop_management' %}" class="btn">Shop Management</a>
-    <a href="{% url 'admin:order_list' %}" class="btn">View Orders</a>
-    <a href="{% url 'admin:kitchen_view' %}" class="btn">Kitchen View</a>
-    <a href="{% url 'admin:sorting_bay' %}" class="btn">Sorting Bay</a>
-    <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging Bay</a>
+    <a href="{% url 'admin:shop_management' %}" class="btn">Shop</a>
+    <span class="separator">|</span>
+    <a href="{% url 'admin:order_list' %}" class="btn">Orders</a>
+    <span class="separator">|</span>
+    <a href="{% url 'admin:kitchen_view' %}" class="btn">Kitchen</a>
+    <span class="separator">|</span>
+    <a href="{% url 'admin:sorting_bay' %}" class="btn">Sorting</a>
+    <span class="separator">|</span>
+    <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging</a>
 </div>
 {% endblock %}
+
+<style>
+    .nav-global {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+        background-color: #f8f9fa; /* Light gray background for contrast */
+        border-bottom: 1px solid #ddd;
+    }
+    .btn {
+        text-decoration: none;
+        color: #007bff;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+        background-color: #007bff;
+        color: white;
+    }
+    .separator {
+        color: #ccc;
+        font-size: 1.2em;
+        margin: 0 4px;
+    }
+</style>
 
 {% block content %}
 <h1 style="text-align: center; font-size: 2em; margin-bottom: 10px;">Kitchen View</h1>
