@@ -235,6 +235,7 @@ def shop_management(request):
             gate_status.save()
         elif 'close_shop' in request.POST:
             shop_status.is_shop_open = False
+            gate_status.is_collecting_orders = False
             shop_status.save()
         elif 'close_gate' in request.POST:
             gate_status.is_collecting_orders = False
