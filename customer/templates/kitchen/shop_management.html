@@ -2,113 +2,104 @@
 {% load static %}
 
 {% block content %}
-<div style="margin: 0 auto; padding: 20px; max-width: 600px; font-family: Arial, sans-serif;">
-    <h1 style="text-align: center; font-size: 2em; margin-bottom: 20px;">Shop Management</h1>
+<div class="container" style="padding: 20px;">
+    <h1 style="text-align: center; margin-bottom: 20px;">Shop Management</h1>
 
-    {% if order_date %}
-        <h2 style="text-align: center; font-size: 1.5em; margin-bottom: 20px; color: #4CAF50;">
-            Shop is open for {{ order_date|date:"l, j F Y" }}
-        </h2>
-    {% else %}
-        <h2 style="text-align: center; font-size: 1.5em; margin-bottom: 20px; color: #F44336;">
-            No Order Date Selected
-        </h2>
-    {% endif %}
-
-    <!-- Shop Status Indicators -->
-    <div style="text-align: center; margin-bottom: 20px;">
+    <!-- Display shop and gate status -->
+    <div class="status-indicators" style="text-align: center; margin-bottom: 20px;">
         <p>Shop Status: 
-            <span style="font-weight: bold; color: {{ shop_open|yesno:'green,red' }};">
-                {{ shop_open|yesno:'&#9679; Open,&#9679; Closed' }}
-            </span>
+            <strong style="color: {{ shop_open|yesno:'green,red' }};">
+                {{ shop_open|yesno:'Open,Closed' }}
+            </strong>
         </p>
         <p>Gate Status: 
-            <span style="font-weight: bold; color: {{ gate_open|yesno:'green,red' }};">
-                {{ gate_open|yesno:'&#9679; Open for Orders,&#9679; Closed for Orders' }}
-            </span>
+            <strong style="color: {{ gate_open|yesno:'green,red' }};">
+                {{ gate_open|yesno:'Open for Orders,Closed for Orders' }}
+            </strong>
         </p>
     </div>
 
-    <!-- Action Form -->
-    <form method="post" style="text-align: center; margin-top: 20px;">
+    <!-- Display message based on the shop and gate status -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        {% if shop_open %}
+            <h2 style="color: green;">The shop is open for business.</h2>
+        {% elif gate_open %}
+            <h2 style="color: orange;">Gate is open for accepting orders. The shop is currently closed.</h2>
+        {% else %}
+            <h2 style="color: red;">The shop is closed, and the gate is not accepting orders.</h2>
+        {% endif %}
+    </div>
+
+    <!-- Form for managing shop -->
+    <form method="post" style="margin-top: 20px; text-align: center;">
         {% csrf_token %}
 
         {% if not shop_open and not gate_open %}
-            <label for="order-date" style="font-size: 1em; margin-right: 8px;">Select Order Date:</label>
-            <input 
-                type="date" 
-                id="order-date" 
-                name="order_date" 
-                value="{{ order_date|date:'Y-m-d' }}" 
-                required 
-                style="padding: 4px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px;"
-            >
+            <label for="order-date" style="font-size: 1em;">Select Order Date:</label>
+            <input type="date" id="order-date" name="order_date" required 
+                style="padding: 8px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 4px; margin: 10px 0;">
         {% endif %}
 
         <!-- Action Buttons -->
-        <div style="margin-top: 20px;">
-            <button 
-                type="submit" 
-                name="open_shop" 
-                id="open-shop-btn" 
-                class="action-button" 
-                {% if not order_date %}disabled{% endif %}
-                style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 1em; cursor: pointer; margin-right: 10px;"
-            >
+        <div class="button-container" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            <button type="submit" name="open_shop" class="button" id="open-shop-btn" 
+                {% if not dateField.value and not shop_open %} disabled {% endif %}
+                style="background-color: green; color: white; padding: 12px; border: none; border-radius: 5px; width: 200px; font-size: 1em; cursor: pointer;">
                 Open Shop
             </button>
-
-            <button 
-                type="submit" 
-                name="close_shop" 
-                id="close-shop-btn" 
-                class="action-button" 
-                {% if not shop_open %}disabled{% endif %}
-                style="background-color: #F44336; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 1em; cursor: pointer; margin-right: 10px;"
-            >
+            
+            <button type="submit" name="close_shop" class="button" id="close-shop-btn" 
+                {% if not shop_open %} disabled {% endif %}
+                style="background-color: red; color: white; padding: 12px; border: none; border-radius: 5px; width: 200px; font-size: 1em; cursor: pointer;">
                 Close Shop
             </button>
-
-            <button 
-                type="submit" 
-                name="close_gate" 
-                id="close-gate-btn" 
-                class="action-button" 
-                {% if not gate_open %}disabled{% endif %}
-                style="background-color: #FFC107; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 1em; cursor: pointer;"
-            >
+            
+            <button type="submit" name="close_gate" class="button" id="close-gate-btn" 
+                {% if not gate_open %} disabled {% endif %}
+                style="background-color: orange; color: white; padding: 12px; border: none; border-radius: 5px; width: 200px; font-size: 1em; cursor: pointer;">
                 Close Gate for Orders
             </button>
         </div>
     </form>
 </div>
 
+<!-- Mobile-friendly adjustments -->
+<style>
+    /* Ensure buttons stack vertically on small screens */
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        width: 100%; /* Make buttons full width on mobile */
+        max-width: 250px; /* Limit max width for larger screens */
+    }
+
+    @media (max-width: 768px) {
+        button {
+            font-size: 1em;
+            padding: 14px;
+        }
+    }
+
+    /* Style disabled buttons */
+    button:disabled {
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+    }
+</style>
+
 <script>
-    // Enable "Open Shop" button only when a date is selected
+    // Enable "Open Shop" button only when date is selected
     const dateField = document.getElementById("order-date");
     const openShopButton = document.getElementById("open-shop-btn");
 
     if (dateField) {
-        dateField.addEventListener("change", function () {
-            openShopButton.disabled = !dateField.value;
+        dateField.addEventListener("change", function() {
+            openShopButton.disabled = !dateField.value; // Enable only if date is selected
         });
     }
 </script>
-
-<style>
-    /* Style disabled buttons to appear greyed out */
-    button:disabled {
-        background-color: #ccc !important;
-        color: #666 !important;
-        cursor: not-allowed !important;
-    }
-
-    button.action-button {
-        transition: background-color 0.3s ease;
-    }
-
-    button.action-button:hover:not(:disabled) {
-        filter: brightness(1.1);
-    }
-</style>
 {% endblock %}
