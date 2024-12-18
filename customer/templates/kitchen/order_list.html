@@ -8,11 +8,16 @@
 
 {% block nav-global %}
 <div class="nav-global">
-    <a href="{% url 'admin:shop_management' %}" class="btn">Shop Management</a>
-    <a href="{% url 'admin:order_list' %}" class="btn">View Orders</a>
-    <a href="{% url 'admin:kitchen_view' %}" class="btn">Kitchen View</a>
-    <a href="{% url 'admin:sorting_bay' %}" class="btn">Sorting Bay</a>
-    <a href="{% url 'admin:packaging_bay' %}" class="btn">Packaging Bay</a>
+    <div class="dropdown">
+        <button class="dropbtn">Management</button>
+        <div class="dropdown-content">
+            <a href="{% url 'admin:shop_management' %}">Shop Management</a>
+            <a href="{% url 'admin:order_list' %}">View Orders</a>
+            <a href="{% url 'admin:kitchen_view' %}">Kitchen View</a>
+            <a href="{% url 'admin:sorting_bay' %}">Sorting Bay</a>
+            <a href="{% url 'admin:packaging_bay' %}">Packaging Bay</a>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
