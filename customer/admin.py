@@ -9,9 +9,9 @@ from phonepe.sdk.pg.env import Env
 
 # Custom Admin Site
 class CustomAdminSite(AdminSite):
-    site_header = "FreshServe Admin"
-    site_title = "FreshServe Admin Portal"
-    index_title = "Welcome to FreshServe Admin"
+    site_header = "Tanuja's BatterHouse"
+    site_title = "Tanuja's BatterHouse Admin Portal"
+    index_title = "Welcome to Tanuja's BatterHouse Admin"
 
     def get_urls(self):
         custom_urls = [
