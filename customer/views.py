@@ -1,7 +1,6 @@
 # Standard library imports
 from decimal import Decimal, ROUND_DOWN
 from datetime import datetime
-import json
 
 # Django imports
 from django.utils.timezone import now, timezone
@@ -165,6 +164,7 @@ class ConfirmOrder(View):
             print("Error during payment initiation:", e)
             return JsonResponse({'error': 'An error occurred while processing your order.'}, status=500)
 
+
 class PaymentSuccess(View):
     def get(self, request, order_id, *args, **kwargs):
         try:
@@ -270,17 +270,13 @@ def order_list(request):
 
 
 def kitchen_view(request):
-    # Get today's date
-    today = timezone.now().date()
+    selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
     
-    # Get the order date from the request, default to today
-    order_date_str = request.GET.get('order_date', today)
-    
-    # Check if order_date_str is a string, then convert it to date
-    if isinstance(order_date_str, str):
-        order_date = timezone.datetime.strptime(order_date_str, '%Y-%m-%d').date()
+    # Parse selected_date if provided, else use today's date
+    if selected_date:
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
     else:
-        order_date = order_date_str
+        selected_date = now().date()
 
     # Initialize variables
     category_totals = {
@@ -295,7 +291,7 @@ def kitchen_view(request):
     }
 
     # Process each order based on the selected order_date
-    orders = Order.objects.filter(order_date=order_date, is_paid=True)
+    orders = Order.objects.filter(order_date=selected_date, is_paid=True)
 
     for order in orders:
         for item in order.items.all():
@@ -402,18 +398,17 @@ def sorting_bay(request):
     return render(request, 'kitchen/sorting_bay.html', context)
 
 
-
-
-
-
 def terms(request):
     return render(request, 'policies/terms_and_conditions.html')
+
 
 def privacy(request):
     return render(request, 'policies/privacy_policy.html')
 
+
 def refund(request):
     return render(request, 'policies/refund_policy.html')
+
 
 def shipping(request):
     return render(request, 'policies/shipping_policy.html')
