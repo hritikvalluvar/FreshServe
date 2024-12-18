@@ -3,11 +3,18 @@
 {% block content %}
 <h1 class="page-title">Packaging Bay View</h1>
 
-<!-- Date selection form (without the filter button) -->
-<div class="filter-form">
-    <form method="GET" action="{% url 'admin:packaging_bay' %}">
-        <label for="order_date">Select Order Date:</label>
-        <input type="date" id="order_date" name="order_date" value="{{ selected_date|date:'Y-m-d' }}">
+<!-- Date filter form -->
+<div style="display: flex; justify-content: center; margin-bottom: 15px;">
+    <form method="GET" action="{% url 'admin:packaging_bay' %}" id="date-filter-form">
+        <label for="order_date" style="font-size: 1em; margin-right: 8px;">Select Order Date:</label>
+        <input 
+            type="date" 
+            id="order_date" 
+            name="order_date" 
+            value="{{ selected_date|date:'Y-m-d' }}" 
+            onchange="submitDateFilter()" 
+            style="padding: 4px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 4px;"
+        >
     </form>
 </div>
 
@@ -45,6 +52,11 @@
 </div>
 
 <script>
+    // Function to automatically submit the form when the date is changed
+    function submitDateFilter() {
+        document.getElementById("date-filter-form").submit();
+    }
+
     // Function to print a specific order by its element ID
     function printOrder(orderId) {
         var printContents = document.getElementById(orderId).innerHTML;
