@@ -317,6 +317,8 @@ def kitchen_view(request):
     else:
         selected_date = now().date()
 
+    check_payment_status(selected_date)
+
     # Initialize variables
     category_totals = {
         'Steamed Idli': {'quantity': 0, 'batter': 0, 'unit': 'pieces'},
@@ -388,6 +390,8 @@ def packaging_bay_view(request):
     else:
         selected_date = now().date()
 
+    check_payment_status(selected_date)
+
     # Retrieve and filter orders in a single step
     orders = Order.objects.filter(
         order_date=selected_date, 
@@ -411,6 +415,8 @@ def sorting_bay(request):
     else:
         selected_date = now().date()
 
+    check_payment_status(selected_date)
+    
     # Retrieve and filter orders in a single step
     orders = Order.objects.filter(
         order_date=selected_date, 
