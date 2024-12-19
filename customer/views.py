@@ -218,17 +218,21 @@ def check_payment_status(selected_date):
     for order in orders:
         merchant_transaction_id = f"order_{order.order_id}"
         response = phonepe_client.check_status(merchant_transaction_id)
-        print(merchant_transaction_id, response)
 
-        # if response.data.state == 'SUCCESS':
-        #     order.is_paid = True
-        #     order.transaction_id = response.data.transaction_id
-        #     order.save()
+        if not response.success:
+            order_items = OrderItem.objects.filter(order=order)
+            order_items.delete()
+            order.delete()
+
+        elif response.data.state == 'SUCCESS':
+            order.is_paid = True
+            order.transaction_id = response.data.transaction_id
+            order.save()
         
-        # elif response.data.state == 'FAILED':
-        #     order_items = OrderItem.objects.filter(order=order)
-        #     order_items.delete()
-        #     order.delete()
+        elif response.data.state == 'FAILED':
+            order_items = OrderItem.objects.filter(order=order)
+            order_items.delete()
+            order.delete()
 
     return
 
