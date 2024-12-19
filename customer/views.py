@@ -219,7 +219,7 @@ def check_payment_status(selected_date):
         merchant_transaction_id = f"order_{order.order_id}"
         response = phonepe_client.check_status(merchant_transaction_id)
 
-        if response.data.state == 'COMPLETED':
+        if response.data.state == 'SUCCESS':
             order.is_paid = True
             order.transaction_id = response.data.transaction_id
             order.save()
