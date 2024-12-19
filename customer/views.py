@@ -201,8 +201,6 @@ class PaymentSuccess(View):
 
 
 def check_payment_status(selected_date):
-    selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
-
     orders = Order.objects.filter(order_date=selected_date, is_paid=False)
 
     if not orders.exists():
@@ -289,7 +287,7 @@ def order_list(request):
         selected_date = now().date()
 
     check_payment_status(selected_date)
-    
+
     # Retrieve and filter orders in a single step
     orders = Order.objects.filter(
         order_date=selected_date, 
