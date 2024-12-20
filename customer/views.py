@@ -321,13 +321,13 @@ def kitchen_view(request):
 
     # Initialize variables
     category_totals = {
-        'Steamed Idli': {'quantity': 0, 'batter': 0, 'unit': 'pieces'},
-        'Ragi Idli': {'quantity': 0, 'batter': 0, 'unit': 'pieces'},
         'Idli/Dosa Batter': {'quantity': 0, 'batter': 0, 'unit': 'kg'},
         'Ragi Batter': {'quantity': 0, 'batter': 0, 'unit': 'kg'},
+        'Steamed Idli': {'quantity': 0, 'batter': 0, 'unit': 'pieces'},
+        'Ragi Idli': {'quantity': 0, 'batter': 0, 'unit': 'pieces'},
         'Sambar': {'quantity': 0, 'unit': 'pack'},
-        'Onion Chutney': {'quantity': 0, 'unit': 'pack'},
         'Peanut Chutney': {'quantity': 0, 'unit': 'pack'},
+        'Onion Chutney': {'quantity': 0, 'unit': 'pack'},
         'Sambar Powder': {'quantity': 0, 'unit': 'gm'},
     }
 
@@ -425,9 +425,10 @@ def sorting_bay(request):
 
     # Define the desired category order
     desired_order = [
-        'Steamed Idli', 'Ragi Idli', 'Idli/Dosa Batter',
-        'Ragi Batter', 'Sambar', 'Onion Chutney',
-        'Peanut Chutney', 'Sambar Powder'
+        'Idli/Dosa Batter', 'Ragi Batter', 
+        'Steamed Idli', 'Ragi Idli', 
+        'Sambar', 'Peanut Chutney',
+        'Onion Chutney', 'Sambar Powder'
     ]
 
     # Generate the category summary
