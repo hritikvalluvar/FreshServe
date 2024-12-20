@@ -423,6 +423,13 @@ def sorting_bay(request):
         is_paid=True
     )
 
+    # Define the desired category order
+    desired_order = [
+        'Steamed Idli', 'Ragi Idli', 'Idli/Dosa Batter',
+        'Ragi Batter', 'Sambar', 'Onion Chutney',
+        'Peanut Chutney', 'Sambar Powder'
+    ]
+
     # Generate the category summary
     category_summary = {}
     for order in orders:
@@ -436,8 +443,14 @@ def sorting_bay(request):
                 category_summary[category] = {}
             category_summary[category][subcategory] = category_summary[category].get(subcategory, 0) + 1
 
+    # Sort category_summary based on the desired order
+    sorted_category_summary = {
+        category: category_summary[category]
+        for category in desired_order if category in category_summary
+    }
+
     context = {
-        'category_summary': category_summary,
+        'category_summary': sorted_category_summary,
         'selected_date': selected_date,
     }
     return render(request, 'kitchen/sorting_bay.html', context)
