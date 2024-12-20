@@ -136,7 +136,7 @@ class ConfirmOrder(View):
             merchant_id = settings.PHONEPE_MERCHANT_ID
             salt_key = settings.PHONEPE_SECRET_KEY
             salt_index = settings.PHONEPE_SALT_INDEX
-            env = Env.PROD if settings.DEBUG else Env.PROD
+            env = Env.PROD
 
             phonepe_client = PhonePePaymentClient(
                 merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
@@ -224,7 +224,7 @@ def check_payment_status(selected_date):
             order_items.delete()
             order.delete()
 
-        elif response.data.state == 'SUCCESS':
+        elif response.data.state == 'COMPLETED':
             order.is_paid = True
             order.transaction_id = response.data.transaction_id
             order.save()
@@ -416,7 +416,7 @@ def sorting_bay(request):
         selected_date = now().date()
 
     check_payment_status(selected_date)
-    
+
     # Retrieve and filter orders in a single step
     orders = Order.objects.filter(
         order_date=selected_date, 
