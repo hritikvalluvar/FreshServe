@@ -14,15 +14,17 @@
 ---
 
 ## **🌟 Key Use Cases**
-- **👩‍🍳 Business Owners**:
-  - Effortlessly manage menus and update inventory.
-  - Monitor and fulfill orders through a real-time kitchen dashboard.
-  - Generate invoices and accept payments via Razorpay.
-
-- **👥 Customers**:
+- **👥 Customers** (Easy for Customers):
   - Browse the menu with live stock updates.
   - Place orders and track their status.
   - Make secure payments using OTP-based authentication and Razorpay integration.
+
+- **👩‍🍳 Business Owners** (Useful for Business):
+  - Effortlessly manage menus and update inventory.
+  - Monitor and fulfill orders through a real-time kitchen dashboard.
+  - Generate invoices and accept payments via Phonepe.
+
+
 
 ---
 
@@ -33,7 +35,7 @@
 | **Admin Management**     | ![Admin Demo](https://via.placeholder.com/400x200?text=Admin+Management+Demo)            |
 | **Kitchen Dashboard**    | ![Kitchen Dashboard](https://via.placeholder.com/400x200?text=Kitchen+Dashboard+Demo)    |
 
-📌 _For a live demo, visit [FreshServe](https://github.com/hritikvalluvar/FreshServe)._
+📌 _For a live demo, visit [FreshServe](https://tanujasbatterhouse.vercel.app)._
 
 ---
 

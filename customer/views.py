@@ -3,7 +3,7 @@ from decimal import Decimal, ROUND_DOWN
 from datetime import datetime
 
 # Django imports
-from django.utils.timezone import now, timezone
+from django.utils.timezone import now
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, redirect

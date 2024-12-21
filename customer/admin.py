@@ -1,11 +1,14 @@
-from django.contrib import admin 
 from django.urls import path
-from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
-from django.utils.html import format_html
-from .views import shop_management, order_list, packaging_bay_view, kitchen_view, sorting_bay
+from django.conf import settings
+from django.contrib import admin 
 from django.contrib.admin import AdminSite
+
+from .models import Product, GateClosed, ShopClosed, Order, OrderItem, OrderAvailability
+from .views import shop_management, order_list, packaging_bay_view, kitchen_view, sorting_bay
+
 from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
 from phonepe.sdk.pg.env import Env
+
 
 # Custom Admin Site
 class CustomAdminSite(AdminSite):
@@ -45,15 +48,17 @@ class ProductAdmin(admin.ModelAdmin):
     make_available.short_description = "Mark as available"
     make_unavailable.short_description = "Mark as unavailable"
 
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     readonly_fields = ('product', 'quantity')
     extra = 0
 
+
 def refresh_payment_status(modeladmin, request, queryset):
-    merchant_id = "M22PLAPR1OA42"
-    salt_key = "d652d8ec-15b5-4fec-89de-0c8d43183fad"
-    salt_index = 1 # insert your salt index
+    merchant_id = settings.PHONEPE_MERCHANT_ID
+    salt_key = settings.PHONEPE_SECRET_KEY
+    salt_index = settings.PHONEPE_SALT_INDEX
     env = Env.PROD
     should_publish_events = True
     phonepe_client = PhonePePaymentClient(merchant_id, salt_key, salt_index, env, should_publish_events)
@@ -91,3 +96,4 @@ site.register(GateClosed)
 site.register(ShopClosed)
 site.register(Order, OrderAdmin)
 site.register(OrderItem)
+site.register(OrderAvailability)
