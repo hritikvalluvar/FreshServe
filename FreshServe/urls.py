@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from customer.views import Index, About, Orders, ConfirmOrder, PaymentSuccess, PaymentCallback, ContactView, menu, terms, privacy, refund, shipping
+from customer.views import Index, About, Orders, ConfirmOrder, PaymentSuccess, ContactView, menu, terms, privacy, refund, shipping
 from customer.admin import site
 
 
@@ -22,7 +22,6 @@ urlpatterns = [
     path('order/', Orders.as_view(), name='order'),
     path('order/confirm/', ConfirmOrder.as_view(), name='order_confirm'),
     path('order/success/<str:order_id>/', PaymentSuccess.as_view(), name='order_success'),
-    path('payment/callback/<str:order_id>/', PaymentCallback.as_view(), name='payment_callback'),
 
     path('terms-and-conditions/', terms, name='terms'),
     path('privacy-policy/', privacy, name='privacy'),
