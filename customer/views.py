@@ -144,7 +144,7 @@ class ConfirmOrder(View):
 
             unique_transaction_id = f"order_{order.order_id}"
             ui_redirect_url = request.build_absolute_uri(f'/order/success/{order.order_id}/')
-            s2s_callback_url = request.build_absolute_uri('/payment/callback/{order.order_id}/')
+            s2s_callback_url = request.build_absolute_uri(f'/payment/callback/{order.order_id}/')
             amount_in_paise = int(grand_total * 100)
 
             pay_page_request = PgPayRequest.pay_page_pay_request_builder(
