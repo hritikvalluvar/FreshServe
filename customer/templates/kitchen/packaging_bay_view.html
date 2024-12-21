@@ -91,27 +91,19 @@
         var printContents = document.getElementById(orderId).innerHTML;
         var originalContents = document.body.innerHTML;
 
-        // Remove the header, navigation, and buttons for printing
+        // Remove the print button and add a bounding box
+        printContents = '<div class="print-box">' + printContents + '</div>';
+
         document.body.innerHTML = printContents;
-        
         window.print();
         document.body.innerHTML = originalContents;
     }
 
     // Function to print all orders
     function printAllOrders() {
-        // Get only the content to print (orders grid)
-        var printContents = document.getElementById('all-orders').innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        // Remove the header, navigation, and buttons for printing
-        document.body.innerHTML = printContents;
-        
         window.print();
-        document.body.innerHTML = originalContents;
     }
 </script>
-
 
 <style>
     .separator {
