@@ -200,6 +200,7 @@ class PaymentSuccess(View):
 
 
 class PaymentCallback(View):
+    @csrf_exempt
     def post(self, order_id, *args, **kwargs):
         try:
             # Setup PhonePe client
