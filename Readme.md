@@ -15,48 +15,29 @@
 
 ## **🌟 Key Use Cases**
 - **👥 Customers** (Easy for Customers):
-  - Browse the menu with live stock updates.
-  - Place orders and track their status.
-  - Make secure payments using OTP-based authentication and Razorpay integration.
+  - Browse the menu, select products, and place orders with seamless online payments.
+  - Check shop status and view available products before ordering.
+  - Contact the business for inquiries or feedback and access policies for transparency.
 
 - **👩‍🍳 Business Owners** (Useful for Business):
-  - Effortlessly manage menus and update inventory.
-  - Monitor and fulfill orders through a real-time kitchen dashboard.
-  - Generate invoices and accept payments via Phonepe.
+  - Manage shop status, item availability, and order processing in real time.
+  - View summarized product quantities for efficient preparation in the kitchen.
+  - Streamline packaging with order-specific views and bulk receipt printing.
 
 
 
 ---
 
 ## **🎥 Demo**
-| Feature                  | Preview                                                                                  |
-|--------------------------|------------------------------------------------------------------------------------------|
-| **Customer Portal**      | ![Customer Demo](https://via.placeholder.com/400x200?text=Customer+Portal+Demo)          |
-| **Admin Management**     | ![Alt Text](media/admin.gif)            |
-| **Kitchen Dashboard**    | ![Kitchen Dashboard](https://via.placeholder.com/400x200?text=Kitchen+Dashboard+Demo)    |
 
 📌 _For a live demo, visit [FreshServe](https://tanujasbatterhouse.vercel.app)._
 
----
-
-## **⚙️ Installation**
-### **🔧 Prerequisites**
-1. **Python 3.10+**
-2. **Virtual Environment Tool** (e.g., `venv` or `virtualenv`)
-3. **Node.js** (for frontend dependencies, if applicable)
-
-### **📥 Steps**
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/hritikvalluvar/FreshServe.git
-   cd FreshServe
+| Feature                  | Preview                                                                                  |
+|--------------------------|------------------------------------------------------------------------------------------|
+| **Customer Portal**      | ![Customer Demo](media/customer.gif)          |
+| **Admin Dashboard**     | ![Admin Demo](media/admin.gif)            |
 
 
-
-
-# FreshServe Catering Management System
-
-The **FreshServe Catering Management System** is a web application designed to simplify the management of a small-scale catering business. It provides a user-friendly interface for customers to place orders and make payments while offering an admin dashboard for efficient business management.
 
 ---
 
@@ -142,7 +123,7 @@ Admins can edit critical business parameters, including:
 - **Frontend**: HTML, CSS, Bootstrap
 - **Database**: Supabase
 - **Deployment**: Vercel
-- **Payment Integration**: Razorpay and PhonePe
+- **Payment Integration**: PhonePe
 
 ---
 
@@ -151,5 +132,38 @@ Follow these steps to set up the project locally:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/username/repository.git
-   cd repository
+   git clone https://github.com/hritikvalluvar/FreshServe.git
+   cd FreshServe
+   ```
+
+2. **Create Virtual Environment**:
+    ```bash
+    virtualenv venv  
+    source venv/bin/activate  
+    ```
+
+3. **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Configure Environment Variables**:
+    Create a `.env` file in the project root and include the following:
+    ```bash
+    SECRET_KEY=your_secret_key 
+    DATABASE_USER=your_supabase_database_user
+    DATABASE_PASSWORD=your_supabase_database_password
+    PHONEPE_MERCHANT_ID=your_phonepe_merchant_id
+    PHONEPE_SECRET_KEY=your_phonepe_secret_key
+    ```
+
+5. **Run Migrations**
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+
+6. **Start Development Server**:
+    ```bash
+    python manage.py runserver
+    ```
