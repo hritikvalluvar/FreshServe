@@ -144,7 +144,7 @@ class ConfirmOrder(View):
 
             unique_transaction_id = f"order_{order.order_id}"
             ui_redirect_url = request.build_absolute_uri(f'/order/success/{order.order_id}/')
-            s2s_callback_url = request.build_absolute_uri('/payment/callback/')
+            s2s_callback_url = request.build_absolute_uri('/payment/callback/{order.order_id}/')
             amount_in_paise = int(grand_total * 100)
 
             pay_page_request = PgPayRequest.pay_page_pay_request_builder(
@@ -181,15 +181,48 @@ class PaymentSuccess(View):
             # Check payment status
             merchant_transaction_id = f"order_{order_id}"
             response = phonepe_client.check_status(merchant_transaction_id)
-            print(order_id)
-            print(response)
+
             # Validate response and update order
-            if response.success is True:
+            if response.data.state == 'COMPLETED':
                 order = Order.objects.get(order_id=order_id)
                 order.is_paid = True
                 order.transaction_id = response.data.transaction_id
                 order.save()
                 return render(request, 'customer/order_success.html', {'order': order})
+            else:
+                return JsonResponse({'error': 'Payment failed or invalid status'}, status=400)
+
+        except Order.DoesNotExist:
+            return JsonResponse({'error': 'Order not found'}, status=404)
+        except Exception as e:
+            print("Error during payment success handling:", e)
+            return JsonResponse({'error': 'An error occurred while verifying the payment.'}, status=500)
+
+
+class PaymentCallback(View):
+    def get(self, request, order_id, *args, **kwargs):
+        try:
+            # Setup PhonePe client
+            merchant_id = settings.PHONEPE_MERCHANT_ID
+            salt_key = settings.PHONEPE_SECRET_KEY
+            salt_index = settings.PHONEPE_SALT_INDEX
+            env = Env.PROD
+
+            phonepe_client = PhonePePaymentClient(
+                merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
+            )
+
+            # Check payment status
+            merchant_transaction_id = f"order_{order_id}"
+            response = phonepe_client.check_status(merchant_transaction_id)
+
+            # Validate response and update order
+            if response.data.state == 'COMPLETED':
+                order = Order.objects.get(order_id=order_id)
+                order.is_paid = True
+                order.transaction_id = response.data.transaction_id
+                order.save()
+                return JsonResponse({'status': 'success'}, status=200)
             else:
                 return JsonResponse({'error': 'Payment failed or invalid status'}, status=400)
 
