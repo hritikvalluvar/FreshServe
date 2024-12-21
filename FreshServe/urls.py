@@ -22,7 +22,7 @@ urlpatterns = [
     path('order/', Orders.as_view(), name='order'),
     path('order/confirm/', ConfirmOrder.as_view(), name='order_confirm'),
     path('order/success/<str:order_id>/', PaymentSuccess.as_view(), name='order_success'),
-    path('payment/callback/', PaymentCallback.as_view(), name='payment_callback'),
+    path('payment/callback/<str:order_id>/', PaymentCallback.as_view(), name='payment_callback'),
 
     path('terms-and-conditions/', terms, name='terms'),
     path('privacy-policy/', privacy, name='privacy'),
