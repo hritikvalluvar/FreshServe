@@ -200,7 +200,7 @@ class PaymentSuccess(View):
 
 
 class PaymentCallback(View):
-    def get(self, order_id, *args, **kwargs):
+    def post(self, order_id, *args, **kwargs):
         try:
             # Setup PhonePe client
             merchant_id = settings.PHONEPE_MERCHANT_ID
