@@ -282,13 +282,23 @@ def shop_management(request):
 
 
 def order_list(request):
+    # Get distinct order dates
+    distinct_dates = (
+        Order.objects.values_list('order_date', flat=True)
+        .distinct()
+        .order_by('-order_date')  # Order dates descending
+    )
+    
+    # Get the latest distinct order date
+    latest_date = distinct_dates.first() if distinct_dates else now().date()
+
     selected_date = request.GET.get('order_date')  # Get the selected date from GET parameters
     
     # Parse selected_date if provided, else use today's date
     if selected_date:
         selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
     else:
-        selected_date = now().date()
+        selected_date = latest_date
 
     check_payment_status(selected_date)
 
@@ -304,6 +314,7 @@ def order_list(request):
         'orders': orders,
         'sum': total,
         'selected_date': selected_date,  # Pass the selected date to the template
+        'distinct_dates': distinct_dates,
     })
 
 
