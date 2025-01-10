@@ -52,6 +52,35 @@
 {% block content %}
 <h1 style="text-align: center; font-size: 2em; margin-bottom: 10px;">Order List</h1>
 
+<!-- Date filter form -->
+<div style="display: flex; justify-content: center; margin-bottom: 15px;">
+    <form method="GET" action="{% url 'admin:order_list' %}" id="date-filter-form">
+        <label for="order_date" style="font-size: 1em; margin-right: 8px;">Select Order Date:</label>
+        <input 
+            type="date" 
+            id="order_date" 
+            name="order_date" 
+            value="{{ selected_date|date:'Y-m-d' }}" 
+            onchange="submitDateFilter()" 
+            style="padding: 4px; font-size: 0.9em; border: 1px solid #ccc; border-radius: 4px;"
+        >
+    </form>
+</div>
+
+{% if selected_date %}
+    <h2 id="date-title" style="text-align: center; font-size: 1.5em; margin-bottom: 20px; color: #4CAF50;">
+        {{ selected_date|date:"l, d F Y" }}
+    </h2>
+{% endif %}
+
+<div style="text-align: center; margin-bottom: 15px;">
+    <button 
+        onclick="printTable()" 
+        style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-size: 0.9em; cursor: pointer;">
+        Print Orders
+    </button>
+</div>
+
 <div id="order-table" style="overflow-x: auto; margin: 0 auto; width: 95%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 8px;">
     <table style="width: 100%; text-align: center; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 0.85em;">
         <thead>
@@ -67,8 +96,8 @@
         <tbody>
             {% for order in orders %}
             <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px; border: 1px solid #ddd; cursor: pointer;" onclick="copyOrderConfirmation('{{ order.order_id }}', '{{ order.name }}')">
-                    {{ order.order_id }}
+                <td style="padding: 8px; border: 1px solid #ddd;">
+                    <a href="#" onclick="copyOrderConfirmation('{{ order.order_id }}', '{{ order.name }}')" style="color: #007bff; text-decoration: none; cursor: pointer;">{{ order.order_id }}</a>
                 </td>
                 <td style="padding: 8px; border: 1px solid #ddd;">{{ order.name }}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">{{ order.address }}</td>
@@ -81,18 +110,62 @@
                 <td colspan="6" style="padding: 15px; text-align: center; font-size: 1em; color: #777;">No orders available.</td>
             </tr>
             {% endfor %}
+            {% if orders %}
+            <tr style="background-color: #f9f9f9;">
+                <td colspan="5" style="padding: 8px; text-align: right; font-weight: bold; border: 1px solid #ddd;">
+                    Total:
+                </td>
+                <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; color: black;">₹{{ sum }}</td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
 </div>
 
 <script>
+    function submitDateFilter() {
+        document.getElementById("date-filter-form").submit();
+    }
+
+    function printTable() {
+        var printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Order List</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('@media print {');
+        printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
+        printWindow.document.write('h1, h2 { text-align: center; margin: 10px 0; }');
+        printWindow.document.write('table { width: 100%; border-collapse: collapse; font-size: 0.8em; }');
+        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 6px; }');
+        printWindow.document.write('th { background-color: #f2f2f2; }');
+        printWindow.document.write('button, #order_date, label { display: none; }');
+        printWindow.document.write('td { color: black; }');
+        printWindow.document.write('}');
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write('<h1>Order List</h1>');
+
+        var selectedDateTitle = "";
+        if (document.getElementById("date-title")) {
+            selectedDateTitle = document.getElementById("date-title").innerHTML;
+            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
+            printWindow.document.title = "Order List - " + selectedDateTitle;
+        }
+
+        var tableHTML = document.getElementById("order-table").outerHTML;
+        printWindow.document.write(tableHTML);
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+        printWindow.print();
+    }
+
     function copyOrderConfirmation(orderId, name) {
         const message = `${orderId} - ${name}: Order confirmed ✅`;
         navigator.clipboard.writeText(message).then(() => {
-            alert(`Copied to clipboard: ${message}`);
+            alert(`Copied to clipboard: \n${message}`);
         }).catch(err => {
-            alert('Failed to copy message: ' + err);
+            console.error('Could not copy text: ', err);
         });
     }
 </script>
+
 {% endblock %}
