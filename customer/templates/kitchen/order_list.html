@@ -96,7 +96,10 @@
         <tbody>
             {% for order in orders %}
             <tr style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px; border: 1px solid #ddd;">{{ order.order_id }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; cursor: pointer; color: #007bff; text-decoration: underline;" 
+                    onclick="confirmOrder('{{ order.order_id }}', '{{ order.name }}')">
+                    {{ order.order_id }}
+                </td>
                 <td style="padding: 8px; border: 1px solid #ddd;">{{ order.name }}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">{{ order.address }}</td>
                 <td style="padding: 8px; border: 1px solid #ddd;">{{ order.get_area_display }}</td>
@@ -121,7 +124,6 @@
 </div>
 
 <script>
-    // Function to automatically submit the form when the date is changed
     function submitDateFilter() {
         document.getElementById("date-filter-form").submit();
     }
@@ -129,35 +131,17 @@
     function printTable() {
         var printWindow = window.open('', '', 'height=600,width=800');
         printWindow.document.write('<html><head><title>Order List</title>');
-        printWindow.document.write('<style>');
-        printWindow.document.write('@media print {');
-        printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
-        printWindow.document.write('h1, h2 { text-align: center; margin: 10px 0; }');
-        printWindow.document.write('table { width: 100%; border-collapse: collapse; font-size: 0.8em; }');
-        printWindow.document.write('th, td { border: 1px solid black; text-align: center; padding: 6px; }');
-        printWindow.document.write('th { background-color: #f2f2f2; }');
-        printWindow.document.write('button, #order_date, label { display: none; }');
-        printWindow.document.write('td { color: black; }'); /* Ensure visibility of text */
-        printWindow.document.write('}');
-        printWindow.document.write('</style></head><body>');
-        printWindow.document.write('<h1>Order List</h1>');
-        
-        var selectedDateTitle = "";
-        if (document.getElementById("date-title")) {
-            selectedDateTitle = document.getElementById("date-title").innerHTML;
-            printWindow.document.write('<h2>' + selectedDateTitle + '</h2>');
-            // Update the print window title with date and day
-            printWindow.document.title = "Order List - " + selectedDateTitle;
-        }
-    
-        // Print the table
-        var tableHTML = document.getElementById("order-table").outerHTML;
-        printWindow.document.write(tableHTML);
-        printWindow.document.write('</body></html>');
-    
-        printWindow.document.close(); // Close the document
-        printWindow.print(); // Trigger the print dialog
+        printWindow.document.write('<style>@media print { body { font-family: Arial; } }</style></head><body>');
+        var selectedDateTitle = document.getElementById("date-title") ? document.getElementById("date-title").innerHTML : "";
+        printWindow.document.write('<h1>Order List</h1><h2>' + selectedDateTitle + '</h2>');
+        printWindow.document.write(document.getElementById("order-table").outerHTML);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    function confirmOrder(orderId, name) {
+        const message = `${orderId} - ${name}: Order confirmed ✅`;
+        alert(message);
     }
 </script>
-
 {% endblock %}
