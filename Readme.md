@@ -1,6 +1,8 @@
-# Tanuja's BatterHouse
+# Tanuja's BatterHouse (v2)
 
 Online ordering platform for Tanuja's BatterHouse — authentic South Indian food delivery in Panipat, Haryana.
+
+> **v2** — Full rewrite from Django to Next.js. Warm/earthy UI redesign, security hardening, route group architecture, and streamlined admin workflow.
 
 ## Features
 
