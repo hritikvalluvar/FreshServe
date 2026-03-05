@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <nav className="bg-[var(--brand-nav)] px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-[var(--brand-nav-text)]">
+        <Link href="/" className="text-xl font-bold text-[var(--brand-nav-text)] hover:opacity-80">
           Tanuja&apos;s BatterHouse
         </Link>
         <button
@@ -30,7 +30,7 @@ export default function Navbar() {
         <div className={`${isOpen ? "block" : "hidden"} md:flex md:items-center md:gap-6 absolute md:static top-14 left-0 right-0 bg-[var(--brand-nav)] px-4 py-2 md:p-0 z-50`}>
           <Link
             href="/about"
-            className="block py-1 text-[var(--brand-nav-text)] hover:text-white/80"
+            className="block py-1 text-[var(--brand-nav-text)] hover:opacity-70"
             aria-current={pathname === "/about" ? "page" : undefined}
             onClick={() => setIsOpen(false)}
           >
@@ -38,7 +38,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/menu"
-            className="block py-1 text-[var(--brand-nav-text)] hover:text-white/80"
+            className="block py-1 text-[var(--brand-nav-text)] hover:opacity-70"
             aria-current={pathname === "/menu" ? "page" : undefined}
             onClick={() => setIsOpen(false)}
           >
@@ -46,7 +46,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/order"
-            className="block py-1 md:ml-auto font-semibold text-[var(--brand-nav-text)] bg-[var(--brand-primary)] px-4 rounded-full hover:bg-[var(--brand-primary-hover)] transition-colors text-center mt-2 md:mt-0"
+            className="block py-1 md:ml-auto font-semibold text-white bg-[var(--brand-primary)] px-4 rounded-full hover:bg-[var(--brand-primary-hover)] transition-colors text-center mt-2 md:mt-0"
             aria-current={pathname === "/order" ? "page" : undefined}
             onClick={() => setIsOpen(false)}
           >

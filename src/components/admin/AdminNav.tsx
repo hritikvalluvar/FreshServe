@@ -16,31 +16,30 @@ export default function AdminNav() {
   const pathname = usePathname();
 
   return (
-    <div className="bg-gray-100 border-b border-gray-300 no-print">
-      <div className="flex items-center justify-center gap-2 py-3 px-4 flex-wrap">
-        {navItems.map((item, i) => (
-          <span key={item.href} className="flex items-center gap-2">
-            {i > 0 && <span className="text-gray-300 text-lg">|</span>}
+    <nav className="bg-[var(--brand-nav)] no-print">
+      <div className="max-w-5xl mx-auto flex items-center justify-between py-2.5 px-4">
+        <div className="flex items-center gap-1 flex-wrap">
+          {navItems.map((item) => (
             <Link
+              key={item.href}
               href={item.href}
-              className={`px-3 py-1.5 rounded text-sm transition ${
+              className={`px-4 py-2.5 rounded text-sm font-medium transition ${
                 pathname === item.href
-                  ? "bg-blue-600 text-white"
-                  : "text-blue-600 hover:bg-blue-600 hover:text-white"
+                  ? "bg-white/50 text-[var(--brand-nav-text)] font-bold"
+                  : "text-[var(--brand-nav-text)] hover:bg-white/30"
               }`}
             >
               {item.label}
             </Link>
-          </span>
-        ))}
-        <span className="text-gray-300 text-lg">|</span>
+          ))}
+        </div>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="px-3 py-1.5 rounded text-sm text-red-600 hover:bg-red-600 hover:text-white transition"
+          className="px-4 py-2.5 rounded text-sm font-medium text-[var(--brand-error)] hover:bg-[var(--brand-error)] hover:text-white transition"
         >
           Logout
         </button>
       </div>
-    </div>
+    </nav>
   );
 }

@@ -25,7 +25,7 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const base = `inline-flex items-center justify-center px-6 py-2 rounded-lg font-medium transition-colors ${variants[variant]} ${className}`;
+  const base = `inline-flex items-center justify-center px-6 py-2 rounded-lg font-medium transition-colors cursor-pointer select-none ${variants[variant]} ${className}`;
 
   if (href) {
     return (

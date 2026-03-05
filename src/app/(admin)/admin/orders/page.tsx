@@ -60,9 +60,7 @@ export default function OrderListPage() {
   if (loading) return <div className="text-center py-10 text-[var(--brand-muted)]">Loading...</div>;
 
   if (error) {
-    return (
-      <div className="text-center py-10 text-[var(--brand-error)]">{error}</div>
-    );
+    return <div className="text-center py-10 text-[var(--brand-error)]">{error}</div>;
   }
 
   return (
@@ -74,57 +72,57 @@ export default function OrderListPage() {
       )}
 
       {selectedDate && (
-        <h2 className="text-center text-lg text-[var(--brand-success)] mb-4">
+        <p className="text-center text-sm text-[var(--brand-primary)] font-medium mb-4">
           {formatDate(new Date(selectedDate))}
-        </h2>
+        </p>
       )}
 
       <PrintButton label="Print Orders" />
 
-      <div className="overflow-x-auto shadow rounded-lg">
-        <table className="w-full text-center text-sm border-collapse">
+      <div className="bg-[var(--brand-card)] overflow-x-auto shadow-sm rounded-xl border">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-100 border-b-2">
-              <th className="p-2 border">Order ID</th>
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Address</th>
-              <th className="p-2 border">Area</th>
-              <th className="p-2 border">Order Items</th>
-              <th className="p-2 border">Price</th>
+            <tr className="bg-gray-50 border-b text-[var(--brand-muted)]">
+              <th className="p-3 text-left font-medium">Order ID</th>
+              <th className="p-3 text-left font-medium">Name</th>
+              <th className="p-3 text-left font-medium">Address</th>
+              <th className="p-3 text-left font-medium">Area</th>
+              <th className="p-3 text-left font-medium">Order Items</th>
+              <th className="p-3 text-right font-medium">Price</th>
             </tr>
           </thead>
           <tbody>
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-4 text-[var(--brand-muted)]">No orders available.</td>
+                <td colSpan={6} className="p-6 text-center text-[var(--brand-muted)]">No orders available.</td>
               </tr>
             ) : (
               <>
                 {orders.map((order) => (
-                  <tr key={order.order_id} className="border-b">
-                    <td className="p-2 border relative">
+                  <tr key={order.order_id} className="border-b hover:bg-gray-50/50 transition">
+                    <td className="p-3 relative">
                       <button
                         onClick={() => copyConfirmation(order.order_id, order.name)}
-                        className="text-[var(--brand-primary)] hover:underline cursor-pointer"
+                        className="text-[var(--brand-primary)] font-medium hover:underline cursor-pointer"
                       >
                         {order.order_id}
                       </button>
                       {copiedId === order.order_id && (
-                        <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[var(--brand-success)] text-white text-xs px-2 py-0.5 rounded">
+                        <span className="absolute -top-1 left-1/2 -translate-x-1/2 bg-[var(--brand-success)] text-white text-xs px-2 py-0.5 rounded">
                           Copied!
                         </span>
                       )}
                     </td>
-                    <td className="p-2 border">{order.name}</td>
-                    <td className="p-2 border">{order.address}</td>
-                    <td className="p-2 border">{order.area_display}</td>
-                    <td className="p-2 border">{order.items_summary}</td>
-                    <td className="p-2 border font-bold">₹{order.price}</td>
+                    <td className="p-3">{order.name}</td>
+                    <td className="p-3">{order.address}</td>
+                    <td className="p-3">{order.area_display}</td>
+                    <td className="p-3 text-[var(--brand-muted)]">{order.items_summary}</td>
+                    <td className="p-3 text-right font-semibold">₹{order.price}</td>
                   </tr>
                 ))}
-                <tr className="bg-gray-50">
-                  <td colSpan={5} className="p-2 border text-right font-bold">Total:</td>
-                  <td className="p-2 border font-bold">₹{total}</td>
+                <tr className="bg-gray-50 font-semibold">
+                  <td colSpan={5} className="p-3 text-right">Total:</td>
+                  <td className="p-3 text-right">₹{total}</td>
                 </tr>
               </>
             )}

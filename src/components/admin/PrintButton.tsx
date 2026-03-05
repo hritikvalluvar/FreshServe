@@ -5,7 +5,7 @@ export default function PrintButton({ label = "Print" }: { label?: string }) {
     <div className="text-center mb-4 no-print">
       <button
         onClick={() => window.print()}
-        className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700"
+        className="bg-[var(--brand-primary)] text-white px-4 py-2 rounded text-sm hover:bg-[var(--brand-primary-hover)]"
       >
         {label}
       </button>

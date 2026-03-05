@@ -22,15 +22,15 @@ export default function DateFilter({
   };
 
   return (
-    <div className="flex justify-center mb-4 no-print">
-      <label htmlFor="order_date" className="mr-2 text-sm self-center">
-        Select Order Date:
+    <div className="flex justify-center items-center gap-2 mb-4 no-print">
+      <label htmlFor="order_date" className="text-sm font-medium text-[var(--brand-muted)]">
+        Order Date:
       </label>
       <select
         id="order_date"
         value={selectedDate}
         onChange={handleChange}
-        className="border rounded px-2 py-1 text-sm"
+        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)]"
       >
         {dates.map((date) => (
           <option key={date} value={date}>

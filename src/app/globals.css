@@ -4,16 +4,16 @@
   --background: #ffffff;
   --foreground: #333333;
 
-  --brand-primary: #C1440E;
-  --brand-primary-hover: #A3380B;
-  --brand-bg: #FDF6EF;
-  --brand-nav: #8B3A2A;
-  --brand-nav-text: #FFF8F0;
+  --brand-primary: #D4816B;
+  --brand-primary-hover: #C0705A;
+  --brand-bg: #FFF9F7;
+  --brand-nav: #FFBFB0;
+  --brand-nav-text: #5C3425;
   --brand-card: #FFFFFF;
-  --brand-muted: #7C6F64;
-  --brand-success: #2E7D32;
-  --brand-error: #C62828;
-  --brand-warning: #E65100;
+  --brand-muted: #A09590;
+  --brand-success: #81C784;
+  --brand-error: #E57373;
+  --brand-warning: #FFB74D;
 }
 
 body {

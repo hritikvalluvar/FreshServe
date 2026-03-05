@@ -68,55 +68,55 @@ export default function KitchenViewPage() {
       )}
 
       {selectedDate && (
-        <h2 className="text-center text-lg text-[var(--brand-success)] mb-4">
+        <p className="text-center text-sm text-[var(--brand-primary)] font-medium mb-4">
           {formatDate(new Date(selectedDate))}
-        </h2>
+        </p>
       )}
 
       <PrintButton label="Print View" />
 
-      <div className="overflow-x-auto shadow rounded-lg">
-        <table className="w-full text-center text-sm border-collapse">
+      <div className="bg-[var(--brand-card)] overflow-x-auto shadow-sm rounded-xl border">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-100 border-b-2">
-              <th className="p-2 border">Category</th>
-              <th className="p-2 border">Quantity Ordered</th>
-              <th className="p-2 border">Total Batter Required (Kg)</th>
+            <tr className="bg-gray-50 border-b text-[var(--brand-muted)]">
+              <th className="p-3 text-left font-medium">Category</th>
+              <th className="p-3 text-right font-medium">Quantity Ordered</th>
+              <th className="p-3 text-right font-medium">Batter Required (Kg)</th>
             </tr>
           </thead>
           <tbody>
             {entries.length === 0 ? (
               <tr>
-                <td colSpan={3} className="p-4 text-[var(--brand-muted)]">No data available for the selected date.</td>
+                <td colSpan={3} className="p-6 text-center text-[var(--brand-muted)]">No data available for the selected date.</td>
               </tr>
             ) : (
               <>
                 {entries.map(([category, data]) => (
                   <tr key={category} className="border-b">
-                    <td className="p-2 border">{category}</td>
-                    <td className="p-2 border">
+                    <td className="p-3">{category}</td>
+                    <td className="p-3 text-right">
                       {data.quantity > 0 ? `${data.quantity} ${data.unit}` : "-"}
                     </td>
-                    <td className="p-2 border">
+                    <td className="p-3 text-right">
                       {data.batter > 0 ? data.batter : "-"}
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-gray-50">
-                  <td colSpan={2} className="p-2 border text-right font-bold">Total Idli Batter</td>
-                  <td className="p-2 border font-bold">{totalIdliBatter ?? "-"} kg</td>
+                <tr className="bg-gray-50 font-semibold border-b">
+                  <td colSpan={2} className="p-3 text-right">Total Idli Batter</td>
+                  <td className="p-3 text-right">{totalIdliBatter ?? "-"} kg</td>
                 </tr>
-                <tr className="bg-gray-50">
-                  <td colSpan={2} className="p-2 border text-right font-bold">Total Ragi Batter</td>
-                  <td className="p-2 border font-bold">{totalRagiBatter ?? "-"} kg</td>
+                <tr className="bg-gray-50 font-semibold border-b">
+                  <td colSpan={2} className="p-3 text-right">Total Ragi Batter</td>
+                  <td className="p-3 text-right">{totalRagiBatter ?? "-"} kg</td>
                 </tr>
-                <tr className="bg-gray-50">
-                  <td colSpan={2} className="p-2 border text-right font-bold">Rice Needed for Idli Batter</td>
-                  <td className="p-2 border font-bold">{riceForIdli ?? "-"} kg</td>
+                <tr className="bg-gray-50 font-semibold border-b">
+                  <td colSpan={2} className="p-3 text-right">Rice for Idli Batter</td>
+                  <td className="p-3 text-right">{riceForIdli ?? "-"} kg</td>
                 </tr>
-                <tr className="bg-gray-50">
-                  <td colSpan={2} className="p-2 border text-right font-bold">Rice Needed for Ragi Batter</td>
-                  <td className="p-2 border font-bold">{riceForRagi ?? "-"} kg</td>
+                <tr className="bg-gray-50 font-semibold">
+                  <td colSpan={2} className="p-3 text-right">Rice for Ragi Batter</td>
+                  <td className="p-3 text-right">{riceForRagi ?? "-"} kg</td>
                 </tr>
               </>
             )}

@@ -51,58 +51,51 @@ export default function ShopManagementPage() {
   if (loading) return <div className="text-center py-10 text-[var(--brand-muted)]">Loading...</div>;
 
   return (
-    <div className="max-w-xl mx-auto py-6">
+    <div className="max-w-lg mx-auto py-6">
       <h1 className="text-2xl font-bold text-center mb-6">Shop Management</h1>
 
       {error && (
-        <div role="alert" className="bg-red-50 border border-[var(--brand-error)] text-[var(--brand-error)] px-4 py-2 rounded mb-4 text-center">
+        <div role="alert" className="bg-red-50 border border-[var(--brand-error)] text-[var(--brand-error)] px-4 py-2 rounded-lg mb-4 text-center text-sm">
           {error}
         </div>
       )}
 
-      <div className="text-center mb-4 space-y-1">
-        <p>
-          Shop Status:{" "}
-          <strong className={shopOpen ? "text-[var(--brand-success)]" : "text-[var(--brand-error)]"}>
+      <div className="bg-[var(--brand-card)] rounded-xl shadow-sm border p-5 mb-6">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm text-[var(--brand-muted)]">Shop</span>
+          <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${shopOpen ? "bg-green-100 text-[var(--brand-success)]" : "bg-red-100 text-[var(--brand-error)]"}`}>
             {shopOpen ? "Open" : "Closed"}
-          </strong>
-        </p>
-        <p>
-          Gate Status:{" "}
-          <strong className={gateOpen ? "text-[var(--brand-success)]" : "text-[var(--brand-error)]"}>
-            {gateOpen ? "Open for Orders" : "Closed for Orders"}
-          </strong>
-        </p>
-      </div>
-
-      <div className="text-center mb-6">
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-[var(--brand-muted)]">Gate</span>
+          <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${gateOpen ? "bg-green-100 text-[var(--brand-success)]" : "bg-red-100 text-[var(--brand-error)]"}`}>
+            {gateOpen ? "Accepting Orders" : "Closed"}
+          </span>
+        </div>
         {shopOpen && gateOpen && orderDate && (
-          <h2 className="text-lg text-[var(--brand-success)]">
-            The shop is open and accepting orders for {formatDate(new Date(orderDate))}.
-          </h2>
+          <div className="mt-4 pt-3 border-t text-center">
+            <p className="text-sm text-[var(--brand-muted)]">Accepting orders for</p>
+            <p className="font-semibold text-[var(--brand-primary)]">{formatDate(new Date(orderDate))}</p>
+          </div>
         )}
         {shopOpen && !gateOpen && (
-          <h2 className="text-lg text-[var(--brand-warning)]">
-            Not accepting new orders, but shop open for current orders.
-          </h2>
-        )}
-        {!shopOpen && (
-          <h2 className="text-lg text-[var(--brand-error)]">
-            The shop is closed and not accepting any orders.
-          </h2>
+          <div className="mt-4 pt-3 border-t text-center">
+            <p className="text-sm text-[var(--brand-warning)]">Gate closed — processing current orders</p>
+          </div>
         )}
       </div>
 
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-col gap-3">
         {!shopOpen && !gateOpen && (
-          <div>
-            <label htmlFor="order-date" className="block text-sm mb-1">Select Order Date:</label>
+          <div className="bg-[var(--brand-card)] rounded-xl shadow-sm border p-4">
+            <label htmlFor="order-date" className="block text-sm font-medium mb-2">Select Order Date</label>
             <input
               type="date"
               id="order-date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="border rounded px-3 py-2"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)]"
             />
           </div>
         )}
@@ -110,7 +103,7 @@ export default function ShopManagementPage() {
         <button
           onClick={() => handleAction("open_shop")}
           disabled={!shopOpen && !selectedDate}
-          className="bg-[var(--brand-success)] text-white px-6 py-3 rounded-lg w-52 disabled:bg-gray-300 disabled:cursor-not-allowed hover:opacity-90"
+          className="w-full bg-[var(--brand-success)] text-white px-6 py-3 rounded-lg font-medium disabled:bg-gray-300 disabled:cursor-not-allowed hover:opacity-90 transition"
         >
           Open Shop
         </button>
@@ -118,7 +111,7 @@ export default function ShopManagementPage() {
         <button
           onClick={() => handleAction("close_shop")}
           disabled={!shopOpen}
-          className="bg-[var(--brand-error)] text-white px-6 py-3 rounded-lg w-52 disabled:bg-gray-300 disabled:cursor-not-allowed hover:opacity-90"
+          className="w-full bg-[var(--brand-error)] text-white px-6 py-3 rounded-lg font-medium disabled:bg-gray-300 disabled:cursor-not-allowed hover:opacity-90 transition"
         >
           Close Shop
         </button>
@@ -126,7 +119,7 @@ export default function ShopManagementPage() {
         <button
           onClick={() => handleAction("close_gate")}
           disabled={!gateOpen}
-          className="bg-[var(--brand-warning)] text-white px-6 py-3 rounded-lg w-52 disabled:bg-gray-300 disabled:cursor-not-allowed hover:opacity-90"
+          className="w-full bg-[var(--brand-warning)] text-white px-6 py-3 rounded-lg font-medium disabled:bg-gray-300 disabled:cursor-not-allowed hover:opacity-90 transition"
         >
           Close Gate for Orders
         </button>

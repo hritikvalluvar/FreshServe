@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
       setError("Invalid username or password");
       setLoading(false);
     } else {
-      router.push("/admin");
+      window.location.href = "/admin/shop";
     }
   };
 

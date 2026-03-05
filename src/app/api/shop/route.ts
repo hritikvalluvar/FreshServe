@@ -6,11 +6,11 @@ import { shopActionSchema } from "@/lib/validators";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const shop = await prisma.shopClosed.findFirst();
-  const gate = await prisma.gateClosed.findFirst();
-  const orderAvailability = await prisma.orderAvailability.findFirst({
-    orderBy: { id: "desc" },
-  });
+  const [shop, gate, orderAvailability] = await Promise.all([
+    prisma.shopClosed.findFirst(),
+    prisma.gateClosed.findFirst(),
+    prisma.orderAvailability.findFirst({ orderBy: { id: "desc" } }),
+  ]);
 
   return NextResponse.json({
     shopOpen: shop?.is_shop_open ?? false,
