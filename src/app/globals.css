@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #333333;
+
+  --brand-primary: #C1440E;
+  --brand-primary-hover: #A3380B;
+  --brand-bg: #FDF6EF;
+  --brand-nav: #8B3A2A;
+  --brand-nav-text: #FFF8F0;
+  --brand-card: #FFFFFF;
+  --brand-muted: #7C6F64;
+  --brand-success: #2E7D32;
+  --brand-error: #C62828;
+  --brand-warning: #E65100;
+}
+
+body {
+  background: var(--brand-bg);
+  color: var(--foreground);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

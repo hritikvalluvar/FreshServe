@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model OrderAvailability {
+  id   Int      @id @default(autoincrement())
+  date DateTime @unique @db.Date
+
+  @@map("customer_orderavailability")
+}
+
+model GateClosed {
+  id                   Int     @id @default(autoincrement())
+  is_collecting_orders Boolean @default(true)
+
+  @@map("customer_gateclosed")
+}
+
+model ShopClosed {
+  id           Int     @id @default(autoincrement())
+  is_shop_open Boolean @default(true)
+
+  @@map("customer_shopclosed")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(100)
+  description String
+  image_url   String? @db.VarChar(255)
+  price       Decimal @db.Decimal(7, 2)
+  quantity    Int     @default(0)
+  unit        String  @default("pcs") @db.VarChar(20)
+  available   Boolean @default(true)
+
+  orderItems OrderItem[]
+
+  @@map("customer_product")
+}
+
+model Order {
+  order_id       String   @id @db.VarChar(4)
+  name           String   @db.VarChar(100)
+  address        String   @db.VarChar(20)
+  area           String   @db.VarChar(2)
+  price          Decimal  @default(0.00) @db.Decimal(10, 2)
+  transaction_id String?  @db.VarChar(100)
+  phone_number   String   @db.VarChar(10)
+  is_paid        Boolean  @default(false)
+  order_date     DateTime @db.Date
+  created_at     DateTime @default(now())
+
+  items OrderItem[]
+
+  @@map("customer_order")
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  order_id   String  @db.VarChar(4)
+  product_id Int
+  quantity   Decimal @db.Decimal(5, 1)
+
+  order   Order   @relation(fields: [order_id], references: [order_id], onDelete: Cascade)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@map("customer_orderitem")
+}

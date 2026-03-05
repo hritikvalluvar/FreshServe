@@ -1,169 +1,99 @@
-# **📔 FreshServe**
+# Tanuja's BatterHouse
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/hritikvalluvar/FreshServe)
-[![Python](https://img.shields.io/badge/Built%20with-Python%203.10%2B-blue?logo=python)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Framework-Django%205.1.3-green?logo=django)](https://www.djangoproject.com/)
-[![Vercel](https://img.shields.io/badge/Deployment-Vercel-black?logo=vercel)](https://vercel.com/)
-[![Supabase](https://img.shields.io/badge/Backend-Supabase-blue?logo=supabase)](https://supabase.com/)
+Online ordering platform for Tanuja's BatterHouse — authentic South Indian food delivery in Panipat, Haryana.
 
----
+## Features
 
-## **📖 About FreshServe**
-**FreshServe** is a dynamic web application built using Django, designed to simplify managing orders, inventory, and payments for a catering business. It provides seamless solutions for both business owners and customers, ensuring streamlined operations and a user-friendly experience.
+- **Customer ordering** — Browse menu, build cart, place orders with PhonePe payment
+- **Shop management** — Admin controls for opening/closing shop and order gate
+- **Order pipeline** — Kitchen view, sorting bay, and packaging bay for order fulfillment
+- **Delivery areas** — New Township, Old Township, Khora Kheri
 
----
+## Tech Stack
 
-## **🌟 Key Use Cases**
-- **👥 Customers** (Easy for Customers):
-  - Browse the menu, select products, and place orders with seamless online payments.
-  - Check shop status and view available products before ordering.
-  - Contact the business for inquiries or feedback and access policies for transparency.
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **Database**: PostgreSQL via Prisma ORM
+- **Auth**: NextAuth.js (credentials provider, JWT)
+- **Payments**: PhonePe API
+- **Styling**: Tailwind CSS 4 with CSS custom properties
 
-- **👩‍🍳 Business Owners** (Useful for Business):
-  - Manage shop status, item availability, and order processing in real time.
-  - View summarized product quantities for efficient preparation in the kitchen.
-  - Streamline packaging with order-specific views and bulk receipt printing.
+## Getting Started
 
+### Prerequisites
 
+- Node.js 20+
+- PostgreSQL database
 
----
+### Setup
 
-## **🎥 Demo**
+```bash
+# Install dependencies
+npm install
 
-📌 _For a live demo, visit [FreshServe](https://tanujasbatterhouse.vercel.app)._
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your database URL, PhonePe keys, and admin credentials
 
-| Feature                  | Preview                                                                                  |
-|--------------------------|------------------------------------------------------------------------------------------|
-| **Customer Portal**      | ![Customer Demo](media/customer.gif)          |
-| **Admin Dashboard**     | ![Admin Demo](media/admin.gif)            |
+# Generate Prisma client
+npx prisma generate
 
+# Push database schema
+npx prisma db push
 
+# Start dev server
+npm run dev
+```
 
----
+Open [http://localhost:3000](http://localhost:3000).
 
-## 🌟 **Customer Features**
+## Project Structure
 
-### 🏠 **Landing Page**
-- **Announcements**: Displays whether the shop is currently taking orders or not, ensuring customers are informed in real-time.
-- **Navigation Bar**:
-  - Access the **Menu** to browse products.
-  - Explore **Policies** for terms, privacy, refunds, and shipping.
-- **Place Order Button**: Quickly navigate to the order placement page.
+```
+src/
+├── app/
+│   ├── (public)/          # Customer pages (with Navbar + Footer)
+│   │   ├── page.tsx       # Home — order availability status
+│   │   ├── menu/          # Product catalog
+│   │   ├── order/         # Cart → confirm → payment success
+│   │   ├── about/         # About us
+│   │   ├── contact/       # Contact info
+│   │   ├── closed/        # Shop closed notice
+│   │   └── policies/      # Terms, privacy, refund, shipping
+│   ├── (admin)/           # Admin pages (with AdminNav, no public nav)
+│   │   └── admin/
+│   │       ├── login/     # Admin login
+│   │       ├── shop/      # Open/close shop and gate
+│   │       ├── orders/    # View paid orders
+│   │       ├── kitchen/   # Batter requirements
+│   │       ├── sorting/   # Item summary by category
+│   │       └── packaging/ # Per-order packaging cards
+│   └── api/               # API routes
+├── components/
+│   ├── layout/            # Navbar, Footer
+│   ├── admin/             # AdminNav, DateFilter, PrintButton
+│   └── ui/                # Button
+└── lib/                   # Auth, Prisma, PhonePe, validators, utils
+```
 
----
+## Environment Variables
 
-### 🍴 **Menu**
-- Displays all products offered by the business:
-  - Includes product names, descriptions, prices, and quantities.
-  - Visually appealing layout for easy browsing.
-- **Place Order Button**: Redirects users to the order page to start placing their orders.
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | NextAuth JWT secret |
+| `NEXTAUTH_URL` | App base URL |
+| `NEXT_PUBLIC_BASE_URL` | Public base URL for callbacks |
+| `ADMIN_USERNAME` | Admin login username |
+| `ADMIN_PASSWORD` | Admin login password |
+| `PHONEPE_MERCHANT_ID` | PhonePe merchant ID |
+| `PHONEPE_SECRET_KEY` | PhonePe salt key |
+| `PHONEPE_SALT_INDEX` | PhonePe salt index |
 
----
+## Scripts
 
-### 📦 **Orders Page**
-- Lists all available products with:
-  - **Increment/Decrement Buttons**: Adjust quantities for each item, with custom increment sizes based on product type.
-- Collects essential customer information:
-  - **Name**, **House Number**, **Area**, and **Phone Number**.
-- **Payment Integration**:
-  - After order placement, redirects to the **PhonePe** payment page.
-  - Confirms successful transactions on the **Payment Success Page**.
-
----
-
-### 📝 **About Us**
-- A dedicated section sharing the story behind the business, its mission, and its values.
-
----
-
-### 📞 **Contact Us**
-- Provides business contact details for inquiries or support.
-
----
-
-### 📑 **Policies**
-- Comprehensive policy pages for transparency:
-  - **Terms and Conditions**
-  - **Privacy Policy**
-  - **Refund Policy**
-  - **Shipping Policy**
-
----
-
-## 🔑 **Admin Features**
-
-### 📊 **Admin Dashboard**
-- A centralized management panel to oversee the business.
-
-#### **Key Sections**:
-1. **Shop Management**:
-   - Open or close the shop based on operational requirements.
-2. **View Orders**:
-   - Monitor all incoming orders and their statuses.
-3. **Kitchen View**:
-   - Manage orders in preparation and track ingredient requirements.
-4. **Sorting Bay**:
-   - Organize items for packaging.
-5. **Packaging Bay**:
-   - Finalize and package customer orders efficiently.
-
-#### **Database Editing Capabilities**:
-Admins can edit critical business parameters, including:
-- **Shop Status**: Open or close the shop.
-- **Gate Status**: Manage gate availability for order pickups.
-- **Order Availability**: Enable or disable products for ordering.
-- **Order Items**: Modify items in customer orders.
-- **Orders**: Update order details.
-- **Products**: Add, edit, or remove products from the menu.
-
----
-
-## 🚀 **Technologies Used**
-- **Backend**: Django
-- **Frontend**: HTML, CSS, Bootstrap
-- **Database**: Supabase
-- **Deployment**: Vercel
-- **Payment Integration**: PhonePe
-
----
-
-## 🛠 **Setup Instructions**
-Follow these steps to set up the project locally:
-
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/hritikvalluvar/FreshServe.git
-   cd FreshServe
-   ```
-
-2. **Create Virtual Environment**:
-    ```bash
-    virtualenv venv  
-    source venv/bin/activate  
-    ```
-
-3. **Install Dependencies**:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4. **Configure Environment Variables**:
-    Create a `.env` file in the project root and include the following:
-    ```bash
-    SECRET_KEY=your_secret_key 
-    DATABASE_USER=your_supabase_database_user
-    DATABASE_PASSWORD=your_supabase_database_password
-    PHONEPE_MERCHANT_ID=your_phonepe_merchant_id
-    PHONEPE_SECRET_KEY=your_phonepe_secret_key
-    ```
-
-5. **Run Migrations**
-    ```bash
-    python manage.py makemigrations
-    python manage.py migrate
-    ```
-
-6. **Start Development Server**:
-    ```bash
-    python manage.py runserver
-    ```
+```bash
+npm run dev    # Start development server
+npm run build  # Production build
+npm run start  # Start production server
+npm run lint   # Run ESLint
+```
